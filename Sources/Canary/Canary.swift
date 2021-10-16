@@ -5,15 +5,15 @@ var runningTests = false
 
 public class Canary
 {
-    var chirp: CanaryTest
+    private var chirp: CanaryTest
 
-    public required init(serverIP: String, configPath: String, logger: Logger, timesToRun: Int = 1, interface: String?)
+    public required init(serverIP: String, configPath: String, logger: Logger, timesToRun: Int = 1, interface: String? = nil)
     {
         uiLogger = logger
         chirp = CanaryTest(serverIP: serverIP, resourceDirPath: configPath, testCount: timesToRun, interface: interface)
     }
     
-    func runTest()
+    public func runTest()
     {
         chirp.begin()
     }
