@@ -50,7 +50,6 @@ struct CanaryTest//: ParsableCommand
     func begin()
     {
         uiLogger.info("\n Attmpting to run tests...\n")
-        runningTests = true
         
         resourcesDirectoryPath = resourceDirPath
         uiLogger.info("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
@@ -100,10 +99,6 @@ struct CanaryTest//: ParsableCommand
                 zipResults()
             }
         }
-        
-        //ShapeshifterController.sharedInstance.killAllShShifter()
-        uiLogger.info("\nCanary tests are complete.\n")
-        runningTests = false
     }
     
     func guessUserInterface() -> String?

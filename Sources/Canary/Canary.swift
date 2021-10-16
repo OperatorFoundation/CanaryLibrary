@@ -1,7 +1,6 @@
 import Logging
 
 var uiLogger: Logger!
-var runningTests = false
 
 public class Canary
 {

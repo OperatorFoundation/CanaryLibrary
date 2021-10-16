@@ -147,11 +147,7 @@ class TestController
             print("Unable to save result data.")
             return false
         }
-        
-        
-        
-        
-        
+
         if FileManager.default.fileExists(atPath: resultURL.path)
         {
             // We already have a file at this address let's add out results to the end of it.
@@ -241,26 +237,14 @@ class TestController
     
     func getDocumentURL() -> URL?
     {
-        do
+        if let directoryURL = getApplicationSupportURL()
         {
-            //  Find Application Support directory
-            let fileManager = FileManager.default
-            let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            //  Create subdirectory
-            let directoryURL = appSupportURL.appendingPathComponent("CanaryDesktop")
-            
-            if (!FileManager.default.fileExists(atPath: directoryURL.path))
-            {
-                try fileManager.createDirectory (at: directoryURL, withIntermediateDirectories: true, attributes: nil)
-            }
-            
             let documentURL = directoryURL.appendingPathComponent ("\(resultsFileName)\(getNowAsString()).\(resultsExtension)")
             return documentURL
-        
         }
-        catch
+        else
         {
-            print("An error occured while trying to create a document URL.")
+            print("An error occurred while trying to create a document URL.")
             return nil
         }
     }

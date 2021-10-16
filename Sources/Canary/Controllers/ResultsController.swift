@@ -39,16 +39,48 @@ func zipResults()
         return
     }
     
+    guard let applicationSupportDirectory = getApplicationSupportURL()
+    else { return }
+    
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
     let zipName = "adversary_data_\(formatter.string(from: Date())).zip"
-    let destinationURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent(zipName)
-    do {
+    let destinationURL = applicationSupportDirectory.appendingPathComponent(zipName)
+    
+    do
+    {
         try FileManager.default.zipItem(at: sourceURL, to: destinationURL)
     
         uiLogger.error("\n🍩🍩 Saved zip: \(destinationURL)\n")
-    } catch {
+    }
+    catch
+    {
         uiLogger.info("\n🚨 Creation of ZIP archive failed with error:\(error) 🚨\n")
         return
+    }
+}
+
+func getApplicationSupportURL() -> URL?
+{
+    do
+    {
+        //  Find Application Support directory
+        let fileManager = FileManager.default
+        let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        //  Create subdirectory
+        let directoryURL = appSupportURL.appendingPathComponent("CanaryDesktop")
+        
+        if (!FileManager.default.fileExists(atPath: directoryURL.path))
+        {
+            try fileManager.createDirectory (at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        
+        return directoryURL
+    
+    }
+    catch
+    {
+        print("An error occurred while trying to create an application support folder for Canary.")
+        return nil
     }
 }
