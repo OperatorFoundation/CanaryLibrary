@@ -175,7 +175,7 @@ struct CanaryTest//: ParsableCommand
             guard let _ = Transmission.TransmissionConnection(host: serverIP, port: Int(string: allTransports[0].port), type: .tcp)
             else
             {
-                uiLogger.info("\nFailed to connect to the transport server.\n")
+                uiLogger.info("\nFailed to connect to the transport server.\nIP: \(serverIP)\nport: \(allTransports[0].port)")
                 return false
             }
         }
