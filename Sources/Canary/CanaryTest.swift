@@ -172,7 +172,7 @@ struct CanaryTest//: ParsableCommand
         // Is the transport server running
         if !allTransports.isEmpty
         {            
-            guard let _ = Transmission.Connection(host: serverIP, port: Int(string: allTransports[0].port), type: .tcp)
+            guard let _ = Transmission.TransmissionConnection(host: serverIP, port: Int(string: allTransports[0].port), type: .tcp)
             else
             {
                 uiLogger.info("\nFailed to connect to the transport server.\n")

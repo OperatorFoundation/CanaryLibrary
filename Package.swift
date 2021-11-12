@@ -17,11 +17,12 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.1"),
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", from: "0.3.2"),
-        .package(url: "https://github.com/OperatorFoundation/Gardener.git", from: "0.0.44"),
-        .package(url: "https://github.com/OperatorFoundation/ReplicantSwiftClient.git", from: "0.3.10"),
-        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", from: "1.0.3"),
+        .package(url: "https://github.com/OperatorFoundation/Gardener.git", from: "0.0.48"),
+        .package(url: "https://github.com/OperatorFoundation/ReplicantSwiftClient.git", from: "1.0.5"),
+        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", from: "2.1.1"),
+        .package(url: "https://github.com/OperatorFoundation/SwiftHexTools.git", from: "1.2.5"),
         .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", from: "4.3.0"),
-        .package(url: "https://github.com/OperatorFoundation/Transmission.git", from: "0.4.1")
+        .package(url: "https://github.com/OperatorFoundation/Transmission.git", from: "1.0.4")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -32,6 +33,7 @@ let package = Package(
                 "Gardener",
                 "ReplicantSwiftClient",
                 "ShadowSwift",
+                "SwiftHexTools",
                 "Transmission",
                 .product(name: "AdversaryLabClientCore", package: "AdversaryLabClientSwift"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
