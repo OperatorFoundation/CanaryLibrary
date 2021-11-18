@@ -34,7 +34,7 @@ var resourcesDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)
 let adversaryLabClientProcessName = "AdversaryLabClient"
 
 let shsocksServerPort: UInt16 = 2345
-let replicantServerPort = "2277"
+let replicantServerPort: UInt16 = 2277
 
 let allTransports = [shadowsocks, replicant]
 
@@ -46,7 +46,7 @@ let replicantFilePath = "ReplicantClientConfig.json"
 
 //Transports
 let shadowsocks = Transport(name: "shadow", port: "\(shsocksServerPort)")
-let replicant = Transport(name: "Replicant", port: replicantServerPort)
+let replicant = Transport(name: "Replicant", port: "\(replicantServerPort)")
 
 // Web Tests
 let facebook = WebTest(website: "https://www.facebook.com/", name: "facebook", port: "443")

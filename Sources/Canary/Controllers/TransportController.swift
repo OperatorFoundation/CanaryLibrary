@@ -112,7 +112,7 @@ class TransportController
             return
         }
 
-        guard let replicantFactory = ReplicantConnectionFactory(ipString: serverIP, portInt: UInt16(string: replicantServerPort), config: replicantConfig, logger: log)
+        guard let replicantFactory = ReplicantConnectionFactory(ipString: serverIP, portInt:  replicantServerPort, config: replicantConfig, logger: log)
         else
         {
             print("Failed to create Replicant Connection Factory")
