@@ -184,9 +184,9 @@ class TestController
         }
     }
     
-    func test(name: String, serverIPString: String, port: String, interface: String?, webAddress: String?)
+    func test(name: String, serverIPString: String, port: String, interface: String?, webAddress: String?, debugPrints: Bool = false)
     {
-        AdversaryLabController.sharedInstance.launchAdversaryLab(transportName: name, port: port, interface: interface)
+        AdversaryLabController.sharedInstance.launchAdversaryLab(transportName: name, port: port, interface: interface, debugPrints: debugPrints)
         
         if webAddress == nil
         {

@@ -41,9 +41,9 @@ class AdversaryLabController
     ///   - transportName: The name of the transport being used for this connection as a String
     ///   - port: The capture port as a string
     ///   - interface: The name of the interface device if it is not the default.
-    func launchAdversaryLab(transportName: String, port: String, interface: String?)
+    func launchAdversaryLab(transportName: String, port: String, interface: String?, debugPrints: Bool = false)
     {
-        adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: transportName, port: UInt16(string: port), allowBlock: nil)
+        adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: transportName, port: UInt16(string: port), allowBlock: nil, debugPrints: debugPrints)
         
         uiLogger.info("\n🔬  Launching Adversary Lab.")
         

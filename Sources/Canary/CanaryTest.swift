@@ -43,6 +43,8 @@ struct CanaryTest//: ParsableCommand
     
     //@Option(name: NameSpecification.shortAndLong, parsing: SingleValueParsingStrategy.next, help: "Optionally specify the interface name.")
     var interface: String?
+    
+    var debugPrints: Bool
 
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
