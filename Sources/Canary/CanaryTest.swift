@@ -88,13 +88,13 @@ struct CanaryTest//: ParsableCommand
                 {
                     uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
                     //print("\n 🧪 Starting test for \(transport.name) 🧪\n")
-                    TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil)
+                    TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
                 }
                 
                 for webTest in allWebTests
                 {
                     uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
-                    TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website)
+                    TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
                 }
                 
                 // This directory contains our test results.
