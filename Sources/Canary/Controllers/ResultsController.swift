@@ -59,7 +59,7 @@ func zipResults()
         guard FileManager.default.fileExists(atPath: saveDirectoryPath)
         else { return }
         
-        destinationURL = URL(fileURLWithPath: saveDirectoryPath)
+        destinationURL = URL(fileURLWithPath: saveDirectoryPath).appendingPathComponent(zipName)
     }
     
     do
