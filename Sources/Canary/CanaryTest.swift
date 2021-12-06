@@ -51,6 +51,7 @@ struct CanaryTest//: ParsableCommand
         {
             saveDirectoryPath = savePath!
             uiLogger.info("\nUser selected save directory: \(saveDirectoryPath)\n")
+            print(" * \nUser selected save directory: \(saveDirectoryPath)\n")
         }
         
         // Make sure we have everything we need first
@@ -84,7 +85,7 @@ struct CanaryTest//: ParsableCommand
                 for transport in allTransports
                 {
                     uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
-                    //print("\n 🧪 Starting test for \(transport.name) 🧪\n")
+                    print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
                     TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
                 }
                 
