@@ -31,21 +31,12 @@ import Transmission
 struct CanaryTest//: ParsableCommand
 {
     var canaryTestQueue = DispatchQueue(label: "CanaryTests")
-    
-    //@Argument(help: "IP address for the transport server.")
     var serverIP: String
-    
-    //@Argument(help: "Optionally set the path to the directory where Canary's required resources can be found. It is recommended that you only use this if the default directory does not work for you.")
     var resourceDirPath: String
-    
-    //@Option(name: NameSpecification.shortAndLong, parsing: SingleValueParsingStrategy.next, help:"Set how many times you would like Canary to run its tests.")
+    var savePath: String?
     var testCount: Int = 1
-    
-    //@Option(name: NameSpecification.shortAndLong, parsing: SingleValueParsingStrategy.next, help: "Optionally specify the interface name.")
     var interface: String?
-    
     var debugPrints: Bool
-
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
     ///  a csv file and song data (zipped) are saved with the test results.
@@ -55,6 +46,12 @@ struct CanaryTest//: ParsableCommand
         
         resourcesDirectoryPath = resourceDirPath
         uiLogger.info("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
+        
+        if (savePath != nil)
+        {
+            saveDirectoryPath = savePath!
+            uiLogger.info("\nUser selected save directory: \(saveDirectoryPath)\n")
+        }
         
         // Make sure we have everything we need first
         guard checkSetup() else { return }

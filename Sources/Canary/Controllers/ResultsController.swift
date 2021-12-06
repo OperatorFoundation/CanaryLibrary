@@ -39,13 +39,28 @@ func zipResults()
         return
     }
     
-    guard let applicationSupportDirectory = getApplicationSupportURL()
-    else { return }
+    
+    
     
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
     let zipName = "adversary_data_\(formatter.string(from: Date())).zip"
-    let destinationURL = applicationSupportDirectory.appendingPathComponent(zipName)
+    var destinationURL: URL
+    
+    if saveDirectoryPath.isEmpty
+    {
+        guard let applicationSupportDirectory = getApplicationSupportURL()
+        else { return }
+        
+        destinationURL = applicationSupportDirectory.appendingPathComponent(zipName)
+    }
+    else
+    {
+        guard FileManager.default.fileExists(atPath: saveDirectoryPath)
+        else { return }
+        
+        destinationURL = URL(fileURLWithPath: saveDirectoryPath)
+    }
     
     do
     {

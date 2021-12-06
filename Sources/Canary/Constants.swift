@@ -30,6 +30,7 @@ import Foundation
 /// Yes, this one's a var.
 /// Note: this directory will not work when running in Xcode, as we populate this using currentDirectoryPath which points to derived data.
 var resourcesDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)"
+var saveDirectoryPath = ""
 
 let adversaryLabClientProcessName = "AdversaryLabClient"
 
