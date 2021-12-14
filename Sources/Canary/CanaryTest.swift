@@ -25,7 +25,6 @@ import Foundation
 
 import Gardener
 import NetUtils
-import Darwin
 import Transmission
 
 struct CanaryTest//: ParsableCommand
@@ -42,7 +41,7 @@ struct CanaryTest//: ParsableCommand
     ///  a csv file and song data (zipped) are saved with the test results.
     func begin()
     {
-        uiLogger.info("\n Attmpting to run tests...\n")
+        uiLogger.info("\n Attempting to run tests...\n")
         
         resourcesDirectoryPath = resourceDirPath
         uiLogger.info("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
