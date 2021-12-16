@@ -42,9 +42,11 @@ struct CanaryTest//: ParsableCommand
     func begin()
     {
         uiLogger.info("\n Attempting to run tests...\n")
+        print("\n Attempting to run tests...\n")
         
         resourcesDirectoryPath = resourceDirPath
         uiLogger.info("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
+        print("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
         
         if (savePath != nil)
         {
@@ -151,6 +153,7 @@ struct CanaryTest//: ParsableCommand
                 else
                 {
                     uiLogger.info("Shadowsocks config not found at \(resourcesDirectoryPath)/\(shSocksFilePath)")
+                    print("Shadowsocks config not found at \(resourcesDirectoryPath)/\(shSocksFilePath)")
                     return false
                 }
             case replicant:
@@ -175,6 +178,7 @@ struct CanaryTest//: ParsableCommand
             else
             {
                 uiLogger.info("\nFailed to connect to the transport server.\nIP: \(serverIP)\nport: \(allTransports[0].port)")
+                print("\nFailed to connect to the transport server.\nIP: \(serverIP)\nport: \(allTransports[0].port)")
                 return false
             }
         }
