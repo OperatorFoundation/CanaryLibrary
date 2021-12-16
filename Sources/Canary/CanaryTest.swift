@@ -41,7 +41,6 @@ struct CanaryTest//: ParsableCommand
     ///  a csv file and song data (zipped) are saved with the test results.
     func begin()
     {
-        uiLogger.info("\n Attempting to run tests...\n")
         print("\n Attempting to run tests...\n")
         
         resourcesDirectoryPath = resourceDirPath
@@ -133,6 +132,7 @@ struct CanaryTest//: ParsableCommand
     
     func checkSetup() -> Bool
     {
+        print("Check setup called")
         // Does the Resources Directory Exist
         guard FileManager.default.fileExists(atPath: resourcesDirectoryPath)
         else
@@ -183,6 +183,7 @@ struct CanaryTest//: ParsableCommand
             }
         }
         
+        print("Check setup completed")
         return true
     }
 }
