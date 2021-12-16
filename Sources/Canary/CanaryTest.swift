@@ -39,7 +39,7 @@ struct CanaryTest//: ParsableCommand
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
     ///  a csv file and song data (zipped) are saved with the test results.
-    func begin()
+    func begin(runAsync: Bool = true)
     {
         print("\n Attempting to run tests...\n")
         
@@ -56,7 +56,6 @@ struct CanaryTest//: ParsableCommand
         
         // Make sure we have everything we need first
         
-        print("Calling checkSetup()")
         guard checkSetup() else { return }
         print("Returned from checkSetup()")
         
@@ -79,28 +78,41 @@ struct CanaryTest//: ParsableCommand
         
         uiLogger.info("Selected an interface for running test: \(interfaceName)\n")
         
-        canaryTestQueue.async {
-            for i in 1...testCount
-            {
-                uiLogger.info("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************\n")
-                print("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************")
-                
-                for transport in allTransports
-                {
-                    uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
-                    print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
-                    TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
-                }
-                
-                for webTest in allWebTests
-                {
-                    uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
-                    TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
-                }
-                
-                // This directory contains our test results.
-                zipResults()
+        if runAsync
+        {
+            canaryTestQueue.async {
+                runAllTests(interfaceName: interfaceName)
             }
+        }
+        else
+        {
+            runAllTests(interfaceName: interfaceName)
+        }
+    }
+    
+    func runAllTests(interfaceName: String)
+    {
+        for i in 1...testCount
+        {
+            uiLogger.info("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************\n")
+            print("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************")
+            
+            for transport in allTransports
+            {
+                uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
+                print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
+                TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
+            }
+            
+            for webTest in allWebTests
+            {
+                uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
+                print("\n 🧪 Starting web test for \(webTest.website) 🧪")
+                TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
+            }
+            
+            // This directory contains our test results.
+            zipResults()
         }
     }
     
