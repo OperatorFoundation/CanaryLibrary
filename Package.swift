@@ -19,7 +19,7 @@ let package = Package(
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Gardener.git", from: "0.0.48"),
         .package(url: "https://github.com/OperatorFoundation/ReplicantSwiftClient.git", branch: "main"),
-        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", from: "2.1.1"),
+        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/SwiftHexTools.git", from: "1.2.5"),
         .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", from: "4.3.0"),
         .package(url: "https://github.com/OperatorFoundation/Transmission.git", branch: "main")
