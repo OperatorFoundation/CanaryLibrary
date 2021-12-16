@@ -55,7 +55,10 @@ struct CanaryTest//: ParsableCommand
         }
         
         // Make sure we have everything we need first
+        
+        print("Calling checkSetup()")
         guard checkSetup() else { return }
+        print("Returned from checkSetup()")
         
         
         var interfaceName: String
