@@ -39,7 +39,7 @@ struct CanaryTest//: ParsableCommand
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
     ///  a csv file and song data (zipped) are saved with the test results.
-    func begin(runAsync: Bool = true)
+    func begin(runAsync: Bool)
     {
         print("\n Attempting to run tests...\n")
         
