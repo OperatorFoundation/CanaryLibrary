@@ -56,7 +56,7 @@ class TransportConnectionTest
                     completionHandler(self.readBuffer)
                     return
                 }
-                print("Read Buffer: \(self.readBuffer.string)")
+//                print("Read Buffer: \(self.readBuffer.string)")
                 self.read(completionHandler: completionHandler)
             }
             else
