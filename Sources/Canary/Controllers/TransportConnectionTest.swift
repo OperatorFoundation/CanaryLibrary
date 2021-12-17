@@ -110,13 +110,14 @@ class TransportConnectionTest
         {
             if canaryString == payloadString
             {
+                print("\n💕 🐥 It works! 🐥 💕")
                 uiLogger.info("\n💕 🐥 It works! 🐥 💕")
                 return true
             }
             else
             {
-                uiLogger.info("\n🖤  We connected but the data did not match. 🖤")
-                uiLogger.info("\nHere's what we got back instead of what we expected: \(payloadString)\n")
+                uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
+                uiLogger.error("\nHere's what we got back instead of what we expected: \(payloadString)\n")
                 
                 return false
             }
