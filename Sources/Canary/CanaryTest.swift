@@ -128,12 +128,22 @@ struct CanaryTest//: ParsableCommand
         })
         
         print("\nUser did not indicate a preferred interface. Printing all available interfaces.")
-        for interface in allInterfaces { print("\(interface.name)")}
+        for interface in allInterfaces { print("\(interface.name): \(interface.debugDescription)")}
+        
+        let filteredInterfaces = allInterfaces.filter
+        {
+            (thisInterface: Interface) -> Bool in
+            
+            return thisInterface.address != nil
+        }
+        
+        print("Filtered interfaces:")
+        for shortListInterface in filteredInterfaces { print("\(shortListInterface.name): \(shortListInterface.debugDescription)")}
         
         // Return the first interface that begins with the letter e
         // Note: this is just a best guess based on what we understand to be a common scenario
         // The user should use the interface flag if they have something different
-        guard let bestGuess = allInterfaces.firstIndex(where: { $0.name.hasPrefix("e") })
+        guard let bestGuess = filteredInterfaces.firstIndex(where: { $0.name.hasPrefix("e") })
         else
         {
             print("\nWe were unable to identify a likely interface name. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
