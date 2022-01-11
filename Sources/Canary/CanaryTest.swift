@@ -36,6 +36,7 @@ struct CanaryTest//: ParsableCommand
     var testCount: Int = 1
     var interface: String?
     var debugPrints: Bool
+    var runWebTests: Bool
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
     ///  a csv file and song data (zipped) are saved with the test results.
@@ -66,6 +67,7 @@ struct CanaryTest//: ParsableCommand
         {
             // Use the user provided interface name
             interfaceName = interface!
+            print("Running tests using the user selected interface \(interfaceName)")
         }
         else
         {
@@ -73,7 +75,10 @@ struct CanaryTest//: ParsableCommand
             guard let name = guessUserInterface()
             else { return }
             
+            
             interfaceName = name
+            
+            print("\nWe will try using the \(interfaceName) interface. If Canary fails to capture data, it may be because this is not the correct interface. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
         }
         
         uiLogger.info("Selected an interface for running test: \(interfaceName)\n")
@@ -81,16 +86,16 @@ struct CanaryTest//: ParsableCommand
         if runAsync
         {
             canaryTestQueue.async {
-                runAllTests(interfaceName: interfaceName)
+                runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
             }
         }
         else
         {
-            runAllTests(interfaceName: interfaceName)
+            runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
         }
     }
     
-    func runAllTests(interfaceName: String)
+    func runAllTests(interfaceName: String, runWebTests: Bool)
     {
         for i in 1...testCount
         {
@@ -104,11 +109,14 @@ struct CanaryTest//: ParsableCommand
                 TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
             }
             
-            for webTest in allWebTests
+            if (runWebTests)
             {
-                uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
-                print("\n 🧪 Starting web test for \(webTest.website) 🧪")
-                TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
+                for webTest in allWebTests
+                {
+                    uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
+                    print("\n 🧪 Starting web test for \(webTest.website) 🧪")
+                    TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
+                }
             }
             
             // This directory contains our test results.
@@ -170,8 +178,6 @@ struct CanaryTest//: ParsableCommand
                 print("\nWe were unable to identify a likely interface name. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
                 return nil
             }
-            
-            print("\nWe will try using the \(allInterfaces[bestGuess].name) interface. If Canary fails to capture data, it may be because this is not the correct interface. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
             
             return allInterfaces[bestGuess].name
         }
