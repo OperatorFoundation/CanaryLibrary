@@ -101,12 +101,12 @@ struct CanaryTest//: ParsableCommand
         for i in 1...testCount
         {
             uiLogger.info("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************\n")
-            print("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************")
+//            print("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************")
             
             for transport in allTransports
             {
                 uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
-                print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
+//                print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
                 TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
             }
             
