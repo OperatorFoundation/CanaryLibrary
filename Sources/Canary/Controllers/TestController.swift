@@ -190,6 +190,8 @@ class TestController
         
         if webAddress == nil
         {
+            print("Testing \(name) transport...")
+            
             if let transportTestResult = self.runSwiftTransportTest(serverIP: serverIPString, forTransport: Transport(name: name, port: port))
             {
                 sleep(5)
@@ -204,6 +206,8 @@ class TestController
         }
         else
         {
+            print("Testing web address \(webAddress!)")
+            
             if let webTestResult = self.runWebTest(serverIP: serverIPString, port: port, name: name, webAddress: webAddress!)
             {
                 //print("Test result for \(transport.name):\n\(webTestResult)\n")

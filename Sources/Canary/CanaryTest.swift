@@ -85,7 +85,8 @@ struct CanaryTest//: ParsableCommand
         
         if runAsync
         {
-            canaryTestQueue.async {
+            canaryTestQueue.async
+            {
                 runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
             }
         }
