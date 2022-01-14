@@ -29,33 +29,34 @@ import Foundation
 
 /// Yes, this one's a var.
 /// Note: this directory will not work when running in Xcode, as we populate this using currentDirectoryPath which points to derived data.
-var resourcesDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)"
+var configDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)"
 var saveDirectoryPath = ""
 
 let adversaryLabClientProcessName = "AdversaryLabClient"
 
-let shsocksServerPort: UInt16 = 2345
-let replicantServerPort: UInt16 = 2277
+//let shsocksServerPort: UInt16 = 2345
+//let replicantServerPort: UInt16 = 2277
 
-let allTransports = [replicant]//[shadowsocks, replicant]
+var testingTransports = [Transport]()
+let possibleTransportNames = ["shadowsocks", "replicant"]
 
 let httpRequestString = "GET / HTTP/1.0\r\nConnection: close\r\n\r\n"
 let canaryString = "Yeah!\n"
 
-let shSocksFilePath = "shadowsocks.json"
-let replicantFilePath = "ReplicantClientConfig.json"
+//let shSocksFilePath = "shadowsocks.json"
+//let replicantFilePath = "ReplicantClientConfig.json"
 
 //Transports
-let shadowsocks = Transport(name: "shadow", port: "\(shsocksServerPort)")
-let replicant = Transport(name: "Replicant", port: "\(replicantServerPort)")
+//let shadowsocks = Transport(name: "shadow", port: "\(shsocksServerPort)")
+//let replicant = Transport(name: "Replicant", port: "\(replicantServerPort)")
 
 // Web Tests
-let facebook = WebTest(website: "https://www.facebook.com/", name: "facebook", port: "443")
-let cnn = WebTest(website: "https://www.cnn.com/", name: "cnn", port: "443")
-let wikipedia = WebTest(website: "https://www.wikipedia.org/", name: "wikipedia", port: "443")
-let ymedio = WebTest(website: "https://www.14ymedio.com", name: "14ymedio", port: "443")
-let cnet = WebTest(website: "https://www.cubanet.org", name: "cnet", port: "443")
-let diario = WebTest(website: "https://diariodecuba.com", name: "diario", port: "443")
+let facebook = WebTest(website: "https://www.facebook.com/", name: "facebook", port: 443)
+let cnn = WebTest(website: "https://www.cnn.com/", name: "cnn", port: 443)
+let wikipedia = WebTest(website: "https://www.wikipedia.org/", name: "wikipedia", port: 443)
+let ymedio = WebTest(website: "https://www.14ymedio.com", name: "14ymedio", port: 443)
+let cnet = WebTest(website: "https://www.cubanet.org", name: "cnet", port: 443)
+let diario = WebTest(website: "https://diariodecuba.com", name: "diario", port: 443)
 
 let allWebTests = [facebook, cnn, wikipedia, ymedio, cnet]
 

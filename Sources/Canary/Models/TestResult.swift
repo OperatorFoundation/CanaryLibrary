@@ -29,8 +29,8 @@ import Foundation
 
 struct TestResult
 {
-    /// The IP of the server we are testing
-    var serverIP: String
+    /// The IP and port of the server we are testing
+    var hostString: String
     
     /// The date the test was run.
     var testDate: Date

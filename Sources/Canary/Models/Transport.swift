@@ -26,10 +26,77 @@
 // SOFTWARE.
 
 import Foundation
+import ReplicantSwift
+import ShadowSwift
 
-struct Transport: Equatable
+struct Transport
 {
     let name: String
-    let port: String
+    let type: TransportType
+    let configPath: String
+    let config: TransportConfig
+    let serverIP: String
+    let port: UInt16
+    
+    init?(name: String, configPath: String)
+    {
+        self.name = name
+        self.configPath = configPath
+        
+        guard (FileManager.default.fileExists(atPath: configPath))
+        else
+        {
+            uiLogger.error("Config file for \(name) does not exist at \(configPath)")
+            return nil
+        }
+
+        guard let newTransportType = TransportType(rawValue: name.lowercased())
+        else
+        {
+            uiLogger.error("\(name) cannot be identified with a supported transport.")
+            return nil
+        }
+        
+        self.type = newTransportType
+        
+        switch newTransportType
+        {
+            case .replicant:
+                guard let replicantConfig = ReplicantConfig<SilverClientConfig>(withConfigAtPath: configPath)
+                else
+                {
+                    print("Failed to create a Replicant config.")
+                    return nil
+                }
+                
+                self.config = TransportConfig.replicantConfig(replicantConfig)
+                self.serverIP = replicantConfig.serverIP
+                self.port = replicantConfig.port
+                
+            case .shadowsocks:
+                guard let shadowConfig = ShadowConfig(path: configPath)
+                else
+                {
+                    uiLogger.info("\n Unable to parse the ShadowSocks config at \(configPath)")
+                    print("\n Unable to parse the ShadowSocks config at \(configPath)")
+                    return nil
+                }
+                
+                self.config = TransportConfig.shadowsocksConfig(shadowConfig)
+                self.serverIP = shadowConfig.serverIP
+                self.port = shadowConfig.port
+        }
+    }
 }
 
+enum TransportType: String
+{
+    case replicant = "replicant"
+    case shadowsocks = "shadowsocks"
+}
+
+enum TransportConfig
+{
+    case replicantConfig(ReplicantConfig<SilverClientConfig>)
+    case shadowsocksConfig(ShadowConfig)
+}

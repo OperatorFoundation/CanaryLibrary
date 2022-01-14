@@ -8,31 +8,24 @@
 import Foundation
 import Logging
 
+import Net
 import ReplicantSwiftClient
 import ReplicantSwift
 import ShadowSwift
 import Transport
 
-#if (os(macOS) || os(iOS) || os(watchOS) || os(tvOS))
-import Network
-#else
-import NetworkLinux
-#endif
-
 class TransportController
 {
     let transportQueue = DispatchQueue(label: "TransportQueue")
-    let transport: Transport
-    let serverIP: String
     let log: Logger
     
+    var transport: Transport
     var connectionCompletion: ((Connection?) -> Void)?
     var connection: Connection?
     
-    init(transport: Transport, serverIP: String, log: Logger)
+    init(transport: Transport, log: Logger)
     {
         self.transport = transport
-        self.serverIP = serverIP
         self.log = log        
     }
             
@@ -40,15 +33,12 @@ class TransportController
     {
         connectionCompletion = completionHandler
         
-        switch transport
+        switch transport.type
         {
-            case replicant:
+            case .replicant:
                 launchReplicant()
-            case shadowsocks:
+            case .shadowsocks:
                 launchShadow()
-            default:
-                print("Cannot start \(transport.name), this transport is not currently supported.")
-                return
         }
     }
     
@@ -77,57 +67,50 @@ class TransportController
     
     func launchShadow()
     {
-        let configPath = "\(resourcesDirectoryPath)/\(shSocksFilePath)"
-        guard let shadowConfig = ShadowConfig(path: configPath)
-        else
+        switch transport.config
         {
-            uiLogger.info("\n Unable to parse the ShadowSocks config at \(configPath)")
-            print("\n Unable to parse the ShadowSocks config at \(configPath)")
-            return
+            case .shadowsocksConfig(let shadowConfig):
+                let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: log)
+                
+                guard var shadowConnection = shadowFactory.connect(using: .tcp)
+                else
+                {
+                    uiLogger.error("Failed to create a ShadowSocks connection.")
+                    return
+                }
+                
+                connection = shadowConnection
+                shadowConnection.stateUpdateHandler = self.handleStateUpdate
+                shadowConnection.start(queue: transportQueue)
+                
+            default:
+                uiLogger.error("Invalid ShadowSocks config.")
+                return
+                
         }
-        
-        let port = NWEndpoint.Port(integerLiteral: shsocksServerPort)
-        let host = NWEndpoint.Host(serverIP)
-        let shadowFactory = ShadowConnectionFactory(host: host, port: port, config: shadowConfig, logger: log)
-        
-        guard var shadowConnection = shadowFactory.connect(using: .tcp)
-        else
-        {
-            
-            print("Failed to create a ShadowSocks connection.")
-            return
-        }
-        
-        connection = shadowConnection
-        shadowConnection.stateUpdateHandler = self.handleStateUpdate
-        shadowConnection.start(queue: transportQueue)
     }
     
     func launchReplicant()
     {
-        guard let replicantConfig = ReplicantConfig<SilverClientConfig>(polish: nil, toneBurst: nil)
-        else
+        switch transport.config
         {
-            print("Failed to create a replicant config.")
-            return
-        }
+            case .replicantConfig(let replicantConfig):
+                let replicantFactory = ReplicantConnectionFactory(config: replicantConfig, log: log)
 
-        guard let replicantFactory = ReplicantConnectionFactory(ipString: serverIP, portInt:  replicantServerPort, config: replicantConfig, logger: log)
-        else
-        {
-            print("Failed to create Replicant Connection Factory")
-            return
-        }
+                guard var replicantConnection = replicantFactory.connect(using: .tcp)
+                else
+                {
+                    print("Failed to create a Replicant connection.")
+                    return
+                }
 
-        guard var replicantConnection = replicantFactory.connect(using: .tcp)
-        else
-        {
-            print("Failed to create a Replicant connection.")
-            return
+                connection = replicantConnection
+                replicantConnection.stateUpdateHandler = self.handleStateUpdate
+                replicantConnection.start(queue: transportQueue)
+                
+            default:
+                uiLogger.error("Invalid Replicant config.")
+                return
         }
-
-        connection = replicantConnection
-        replicantConnection.stateUpdateHandler = self.handleStateUpdate
-        replicantConnection.start(queue: transportQueue)
     }
 }

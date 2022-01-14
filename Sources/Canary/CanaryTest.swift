@@ -30,8 +30,8 @@ import Transmission
 struct CanaryTest//: ParsableCommand
 {
     var canaryTestQueue = DispatchQueue(label: "CanaryTests")
-    var serverIP: String
-    var resourceDirPath: String
+    //var serverIP: String
+    var configDirPath: String
     var savePath: String?
     var testCount: Int = 1
     var interface: String?
@@ -42,23 +42,10 @@ struct CanaryTest//: ParsableCommand
     ///  a csv file and song data (zipped) are saved with the test results.
     func begin(runAsync: Bool)
     {
-        print("\n Attempting to run tests...\n")
-        
-        resourcesDirectoryPath = resourceDirPath
-        uiLogger.info("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
-        print("\nUser selected resources directory: \(resourcesDirectoryPath)\n")
-        
-        if (savePath != nil)
-        {
-            saveDirectoryPath = savePath!
-            uiLogger.info("\nUser selected save directory: \(saveDirectoryPath)\n")
-            print(" * \nUser selected save directory: \(saveDirectoryPath)\n")
-        }
+        Canary.printLog("\n Attempting to run tests...\n")
         
         // Make sure we have everything we need first
-        
         guard checkSetup() else { return }
-        print("Returned from checkSetup()")
         
         
         var interfaceName: String
@@ -101,13 +88,11 @@ struct CanaryTest//: ParsableCommand
         for i in 1...testCount
         {
             uiLogger.info("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************\n")
-//            print("\n***************************\nRunning test batch \(i) of \(testCount)\n***************************")
             
-            for transport in allTransports
+            for transport in testingTransports
             {
                 uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
-//                print("\n * 🧪 Starting test for \(transport.name) 🧪\n")
-                TestController.sharedInstance.test(name: transport.name, serverIPString: serverIP, port: transport.port, interface: interfaceName, webAddress: nil, debugPrints: debugPrints)
+                TestController.sharedInstance.test(transport: transport, interface: interfaceName, debugPrints: debugPrints)
             }
             
             if (runWebTests)
@@ -116,7 +101,7 @@ struct CanaryTest//: ParsableCommand
                 {
                     uiLogger.info("\n 🧪 Starting web test for \(webTest.website) 🧪")
                     print("\n 🧪 Starting web test for \(webTest.website) 🧪")
-                    TestController.sharedInstance.test(name: webTest.name, serverIPString: serverIP, port: webTest.port, interface: interfaceName, webAddress: webTest.website, debugPrints: debugPrints)
+                    TestController.sharedInstance.test(webTest: webTest, interface: interfaceName, debugPrints: debugPrints)
                 }
             }
             
@@ -186,59 +171,78 @@ struct CanaryTest//: ParsableCommand
     
     func checkSetup() -> Bool
     {
-        print("Check setup called")
-        // Does the Resources Directory Exist
-        guard FileManager.default.fileExists(atPath: resourcesDirectoryPath)
+        // Does the Resources Directory Exist?
+        configDirectoryPath = configDirPath
+        Canary.printLog("\nConfig directory: \(configDirectoryPath)\n")
+        guard FileManager.default.fileExists(atPath: configDirectoryPath)
         else
         {
-            uiLogger.info("\nResource directory does not exist at \(resourcesDirectoryPath).\n")
-            print("Resource directory does not exist at \(resourcesDirectoryPath).")
+            uiLogger.error("\nResource directory does not exist at \(configDirectoryPath).\n")
             return false
         }
         
-        // Does it contain the files we need
-        // One config for every transport being tested
-        for transport in allTransports
+        if (savePath != nil)
         {
-            switch transport
-            {
-            case shadowsocks:
-                guard FileManager.default.fileExists(atPath:"\(resourcesDirectoryPath)/\(shSocksFilePath)")
-                else
-                {
-                    uiLogger.info("Shadowsocks config not found at \(resourcesDirectoryPath)/\(shSocksFilePath)")
-                    print("Shadowsocks config not found at \(resourcesDirectoryPath)/\(shSocksFilePath)")
-                    return false
-                }
-            case replicant:
-                guard FileManager.default.fileExists(atPath:"\(resourcesDirectoryPath)/\(replicantFilePath)")
-                else
-                {
-                    uiLogger.info("Replicant config not found at \(resourcesDirectoryPath)/\(replicantFilePath)")
-                    print("Replicant config not found at \(resourcesDirectoryPath)/\(replicantFilePath)")
-                    return false
-                }
-            default:
-                uiLogger.info("\nTried to test a transport that has no config file. Transport name: \(transport.name)\n")
-                print("Tried to test a transport that has no config file. Transport name: \(transport.name)")
-                return false
-            }
-        }
-        
-        // Is the transport server running
-        if !allTransports.isEmpty
-        {            
-            guard let _ = Transmission.TransmissionConnection(host: serverIP, port: Int(string: allTransports[0].port), type: .tcp)
+            saveDirectoryPath = savePath!
+            
+            // Does the save directory exist?
+            guard FileManager.default.fileExists(atPath: saveDirectoryPath)
             else
             {
-                uiLogger.info("\nFailed to connect to the transport server.\nIP: \(serverIP)\nport: \(allTransports[0].port)")
-                print("\nFailed to connect to the transport server.\nIP: \(serverIP)\nport: \(allTransports[0].port)")
+                uiLogger.error("\nThe selected save directory does not exist at \(saveDirectoryPath).\n")
                 return false
             }
+            
+            Canary.printLog("\nUser selected save directory: \(saveDirectoryPath)\n")
+        }
+
+        guard prepareTransports()
+        else { return false }
+        
+        guard !testingTransports.isEmpty
+        else
+        {
+            uiLogger.error("There were no valid transport configs in the provided directory. Ending test.\nConfig Directory: \(configDirectoryPath)")
+            return false
         }
         
         print("Check setup completed")
         return true
+    }
+    
+    func prepareTransports() -> Bool
+    {
+        // Check the config directory for config files
+        do
+        {
+            let filenames = try FileManager.default.contentsOfDirectory(atPath: configDirectoryPath)
+            
+            for thisFilename in filenames
+            {
+                for thisTransportName in possibleTransportNames
+                {
+                    // Add the names of each config file that contains a valid transport name to allTransports
+                    if (thisFilename.lowercased().contains(thisTransportName.lowercased()))
+                    {                        
+                        guard let newTransport = Transport(name: thisFilename, configPath: configDirectoryPath.appending(thisFilename))
+                        else
+                        {
+                            uiLogger.error("Failed to create a new transport using the provided config at \(configDirectoryPath.appending(thisFilename))")
+                            return false
+                        }
+                        
+                        testingTransports.append(newTransport)
+                    }
+                }
+            }
+            
+            return true
+        }
+        catch
+        {
+            uiLogger.error("Unable to retrieve the contents of \(configDirectoryPath): \(error)")
+            return false
+        }
     }
 }
 

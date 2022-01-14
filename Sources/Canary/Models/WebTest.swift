@@ -11,5 +11,5 @@ struct WebTest
 {
     let website: String
     let name: String
-    let port: String
+    let port: UInt16
 }

@@ -33,7 +33,6 @@ import Chord
 class TestController
 {
     static let sharedInstance = TestController()
-    
     let log = Logger(label: "TransportLogger")
     
     init()
@@ -41,10 +40,9 @@ class TestController
         LoggingSystem.bootstrap(StreamLogHandler.standardError)
     }
     
-    func runSwiftTransportTest(serverIP: String, forTransport transport: Transport) -> TestResult?
+    func runSwiftTransportTest(forTransport transport: Transport) -> TestResult?
     {
-        var result: TestResult?
-        let transportController = TransportController(transport: transport, serverIP: serverIP, log: log)
+        let transportController = TransportController(transport: transport, log: log)
         
         guard let connection = Synchronizer.sync(transportController.startTransport)
         else { return nil }
@@ -54,76 +52,29 @@ class TestController
         ///Connection Test
         let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
         let success = connectionTest.run()
+        let hostString = transport.serverIP + ":\(transport.port)"
         
-        result = TestResult(serverIP: serverIP, testDate: Date(), name: transport.name, success: success)
+        // Save the result to a file
+        let result = TestResult(hostString: hostString, testDate: Date(), name: transport.name, success: success)
+        let _ = save(result: result, testName: transport.name)
         
-        // Save this result to a file
-        let _ = save(result: result!, testName: transport.name)
-        
-//        ///Cleanup
-//        uiLog.info("\n🛁  🛁  🛁  🛁  Cleaning up after test! 🛁  🛁  🛁  🛁"
-//        ShapeshifterController.sharedInstance.stopShapeshifterClient()
-        
-        sleep(2)
-        return result
-    }
-    
-    /// Launches shapeshifter dispatcher with the transport, runs a connection test, and then saves the results to a csv file.
-    ///
-    /// - Parameters:
-    ///   - serverIP: A string value indicating the IPV4 address of the transport server.
-    ///   - transport: The information needed to indicate which transport we are testing.
-    /// - Returns: A TestResult value that indicates whether or not the connection test was successful. This is the same test result information that is also saved to a timestamped csv file.
-    func runTransportTest(serverIP: String, forTransport transport: Transport) -> TestResult?
-    {
-        var result: TestResult?
-
-//        ///Shapeshifter
-//        guard ShapeshifterController.sharedInstance.launchShapeshifterClient(serverIP: serverIP, transport: transport) == true
-//        else
-//        {
-//            uiLog.info("\n❗️ Failed to launch Shapeshifter Client for \(transport) with serverIP: \(serverIP)"
-//            return nil
-//        }
-        
-        uiLogger.info("\n🧩 Launched shapeshifter-dispatcher for \(transport). 🧩")
-                
-        ///Connection Test
-        let testWebAddress = "http://127.0.0.1:1234/"
-        let canaryString = "Yeah!\n"
-        let connectionTest = ConnectionTest(testWebAddress: testWebAddress, canaryString: canaryString)
-        let success = connectionTest.run()
-        
-        result = TestResult(serverIP: serverIP, testDate: Date(), name: transport.name, success: success)
-        
-        // Save this result to a file
-        let _ = save(result: result!, testName: transport.name)
-        
-//        ///Cleanup
-//        uiLog.info("🛁  🛁  🛁  🛁  Cleaning up after test! 🛁  🛁  🛁  🛁\n"
-//        ShapeshifterController.sharedInstance.stopShapeshifterClient()
-        
-        sleep(2)
+        sleep(1)
         return result
     }
     
     /// Tests ability to connect to a given web address without the use of transports
-    func runWebTest(serverIP: String, port: String, name: String, webAddress: String) -> TestResult?
+    func runWebTest(webTest: WebTest) -> TestResult?
     {
         var result: TestResult?
         
         ///Connection Test
-        let connectionTest = ConnectionTest(testWebAddress: webAddress, canaryString: nil)
+        let connectionTest = ConnectionTest(testWebAddress: webTest.website, canaryString: nil)
         let success = connectionTest.run()
         
-        result = TestResult(serverIP: serverIP, testDate: Date(), name: name, success: success)
+        result = TestResult(hostString: webTest.website, testDate: Date(), name: webTest.name, success: success)
         
         // Save this result to a file
-        let _ = save(result: result!, testName: webAddress)
-        
-//        ///Cleanup
-//        uiLog.info("🛁  🛁  🛁  🛁  Cleaning up after web test! 🛁  🛁  🛁  🛁\n"
-//        ShapeshifterController.sharedInstance.stopShapeshifterClient()
+        let _ = save(result: result!, testName: webTest.name)
         
         sleep(2)
         return result
@@ -136,7 +87,7 @@ class TestController
     /// - Returns: A boolean value indicating whether or not the results were saved successfully.
     func save(result: TestResult, testName: String) -> Bool
     {
-        let resultString = "\(result.testDate), \(result.serverIP), \(testName), \(result.success)\n"
+        let resultString = "\(result.testDate), \(result.hostString), \(testName), \(result.success)\n"
         
         guard let resultData = resultString.data(using: .utf8)
             else { return false }
@@ -184,47 +135,43 @@ class TestController
         }
     }
     
-    func test(name: String, serverIPString: String, port: String, interface: String?, webAddress: String?, debugPrints: Bool = false)
+    func test(transport: Transport, interface: String?, debugPrints: Bool = false)
     {
-        AdversaryLabController.sharedInstance.launchAdversaryLab(transportName: name, port: port, interface: interface, debugPrints: debugPrints)
+        AdversaryLabController.sharedInstance.launchAdversaryLab(transport: transport, interface: interface, debugPrints: debugPrints)
         
-        if webAddress == nil
+        print("Testing \(transport.name) transport...")
+        
+        if let transportTestResult = self.runSwiftTransportTest(forTransport: transport)
         {
-            print("Testing \(name) transport...")
-            
-            if let transportTestResult = self.runSwiftTransportTest(serverIP: serverIPString, forTransport: Transport(name: name, port: port))
-            {
-                sleep(5)
-                AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: transportTestResult)
-            }
-            else
-            {
-                uiLogger.info("\n🛑  Received a nil result when testing \(name) transport.\n")
-                sleep(5)
-                AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
-            }
+            sleep(5)
+            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: transportTestResult)
         }
         else
         {
-            print("Testing web address \(webAddress!)")
-            
-            if let webTestResult = self.runWebTest(serverIP: serverIPString, port: port, name: name, webAddress: webAddress!)
-            {
-                //print("Test result for \(transport.name):\n\(webTestResult)\n")
-                sleep(5)
-                AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: webTestResult)
-                //dispatchGroup.leave()
-            }
-            else
-            {
-                uiLogger.info("\n🛑  Received a nil result when testing \(name) web address.")
-                sleep(5)
-                AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
-                //dispatchGroup.leave()
-            }
+            uiLogger.info("\n🛑  Received a nil result when testing \(transport.name) transport.\n")
+            sleep(5)
+            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
         }
+    }
+    
+    func test(webTest: WebTest, interface: String?, debugPrints: Bool = false)
+    {
+        AdversaryLabController.sharedInstance.launchAdversaryLab(webTest: webTest, interface: interface, debugPrints: debugPrints)
         
-        sleep(1)
+        print("Testing web address \(webTest)")
+        
+        if let webTestResult = self.runWebTest(webTest: webTest)
+        {
+            //print("Test result for \(transport.name):\n\(webTestResult)\n")
+            sleep(5)
+            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: webTestResult)
+        }
+        else
+        {
+            uiLogger.info("\n🛑  Received a nil result when testing \(webTest.name) web address.")
+            sleep(5)
+            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
+        }
     }
     
     func getNowAsString() -> String

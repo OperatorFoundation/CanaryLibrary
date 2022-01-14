@@ -38,12 +38,27 @@ class AdversaryLabController
     
     /// Uses AdversaryLab library to start recording packets
     /// - Parameters:
-    ///   - transportName: The name of the transport being used for this connection as a String
-    ///   - port: The capture port as a string
-    ///   - interface: The name of the interface device if it is not the default.
-    func launchAdversaryLab(transportName: String, port: String, interface: String?, debugPrints: Bool = false)
+    ///   - transport: The transport being used for this connection as a Transport
+    ///   - interface: The name of the interface device, if it is not the default, as a String
+    ///   - debugPrints: Whether or not AdversaryLab should show debug prints as a Bool
+    func launchAdversaryLab(transport: Transport, interface: String?, debugPrints: Bool = false)
     {
-        adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: transportName, port: UInt16(string: port), allowBlock: nil, debugPrints: debugPrints)
+        adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: transport.name, port: transport.port, allowBlock: nil, debugPrints: debugPrints)
+        
+        uiLogger.info("\n🔬  Launching Adversary Lab.")
+        
+        let recording = adversaryLabClient?.startRecording(interface)
+        
+        if (recording == nil || !recording!)
+        {
+            uiLogger.info("\n🔬  Failed to launch Adversary Lab: traffic data will not be recorded.")
+        }
+        
+    }
+    
+    func launchAdversaryLab(webTest: WebTest, interface: String?, debugPrints: Bool = false)
+    {
+        adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: webTest.name, port: webTest.port, allowBlock: nil, debugPrints: debugPrints)
         
         uiLogger.info("\n🔬  Launching Adversary Lab.")
         
