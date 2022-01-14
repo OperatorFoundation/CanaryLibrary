@@ -225,10 +225,10 @@ struct CanaryTest//: ParsableCommand
                     if (thisFilename.lowercased().contains(thisTransportName.lowercased()))
                     {
                         let configPath = configDirectoryPath.appending("/\(thisFilename)")
-                        guard let newTransport = Transport(name: thisFilename, configPath: configPath)
+                        guard let newTransport = Transport(name: thisFilename, typeString: thisTransportName, configPath: configPath)
                         else
                         {
-                            uiLogger.error("Failed to create a new transport using the provided config at \(configPath))")
+                            uiLogger.error("Failed to create a new transport using the provided config at \(configPath)")
                             return false
                         }
                         

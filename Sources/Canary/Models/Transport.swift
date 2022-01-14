@@ -38,7 +38,7 @@ struct Transport
     let serverIP: String
     let port: UInt16
     
-    init?(name: String, configPath: String)
+    init?(name: String, typeString: String, configPath: String)
     {
         self.name = name
         self.configPath = configPath
@@ -50,7 +50,7 @@ struct Transport
             return nil
         }
 
-        guard let newTransportType = TransportType(rawValue: name.lowercased())
+        guard let newTransportType = TransportType(rawValue: typeString.lowercased())
         else
         {
             uiLogger.error("\(name) cannot be identified with a supported transport.")
