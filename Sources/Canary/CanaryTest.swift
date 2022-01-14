@@ -171,13 +171,14 @@ struct CanaryTest//: ParsableCommand
     
     func checkSetup() -> Bool
     {
+        Canary.printLog("\n🔍 Checking your setup...\n")
         // Does the Resources Directory Exist?
         configDirectoryPath = configDirPath
-        Canary.printLog("\nConfig directory: \(configDirectoryPath)\n")
+        Canary.printLog("\n✔️ Config directory: \(configDirectoryPath)\n")
         guard FileManager.default.fileExists(atPath: configDirectoryPath)
         else
         {
-            uiLogger.error("\nResource directory does not exist at \(configDirectoryPath).\n")
+            uiLogger.error("\n‼️ Resource directory does not exist at \(configDirectoryPath).\n")
             return false
         }
         
@@ -189,24 +190,17 @@ struct CanaryTest//: ParsableCommand
             guard FileManager.default.fileExists(atPath: saveDirectoryPath)
             else
             {
-                uiLogger.error("\nThe selected save directory does not exist at \(saveDirectoryPath).\n")
+                uiLogger.error("\n‼️ The selected save directory does not exist at \(saveDirectoryPath).\n")
                 return false
             }
             
-            Canary.printLog("\nUser selected save directory: \(saveDirectoryPath)\n")
+            Canary.printLog("\n✔️ User selected save directory: \(saveDirectoryPath)\n")
         }
 
         guard prepareTransports()
         else { return false }
-        
-        guard !testingTransports.isEmpty
-        else
-        {
-            uiLogger.error("There were no valid transport configs in the provided directory. Ending test.\nConfig Directory: \(configDirectoryPath)")
-            return false
-        }
-        
-        print("Check setup completed")
+
+        Canary.printLog("✔️ Check setup completed")
         return true
     }
     
@@ -228,21 +222,28 @@ struct CanaryTest//: ParsableCommand
                         if let newTransport = Transport(name: thisFilename, typeString: thisTransportName, configPath: configPath)
                         {
                             testingTransports.append(newTransport)
+                            Canary.printLog("\n✔️ \(newTransport.name) is ready\n")
                         }
                         else
                         {
-                            uiLogger.error("Failed to create a new transport using the provided config at \(configPath)")
+                            uiLogger.error("⚠️ Failed to create a new transport using the provided config at \(configPath)")
                         }
                     }
                 }
             }
             
+            guard !testingTransports.isEmpty
+            else
+            {
+                uiLogger.error("‼️ There were no valid transport configs in the provided directory. Ending test.\nConfig Directory: \(configDirectoryPath)")
+                return false
+            }
             
-            return !testingTransports.isEmpty
+            return true
         }
         catch
         {
-            uiLogger.error("Unable to retrieve the contents of \(configDirectoryPath): \(error)")
+            uiLogger.error("‼️ Unable to retrieve the contents of \(configDirectoryPath): \(error)")
             return false
         }
     }
