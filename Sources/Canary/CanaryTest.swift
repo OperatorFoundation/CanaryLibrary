@@ -223,11 +223,12 @@ struct CanaryTest//: ParsableCommand
                 {
                     // Add the names of each config file that contains a valid transport name to allTransports
                     if (thisFilename.lowercased().contains(thisTransportName.lowercased()))
-                    {                        
-                        guard let newTransport = Transport(name: thisFilename, configPath: configDirectoryPath.appending(thisFilename))
+                    {
+                        let configPath = configDirectoryPath.appending("/\(thisFilename)")
+                        guard let newTransport = Transport(name: thisFilename, configPath: configPath)
                         else
                         {
-                            uiLogger.error("Failed to create a new transport using the provided config at \(configDirectoryPath.appending(thisFilename))")
+                            uiLogger.error("Failed to create a new transport using the provided config at \(configPath))")
                             return false
                         }
                         
