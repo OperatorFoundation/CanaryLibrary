@@ -62,7 +62,7 @@ struct Transport
         switch newTransportType
         {
             case .replicant:
-                guard let replicantConfig = ReplicantConfig<SilverClientConfig>(withConfigAtPath: configPath)
+                guard let replicantConfig = ReplicantConfig(withConfigAtPath: configPath)
                 else
                 {
                     print("Failed to create a Replicant config.")
@@ -97,6 +97,6 @@ enum TransportType: String
 
 enum TransportConfig
 {
-    case replicantConfig(ReplicantConfig<SilverClientConfig>)
+    case replicantConfig(ReplicantConfig)
     case shadowsocksConfig(ShadowConfig)
 }

@@ -27,8 +27,6 @@
 
 import Foundation
 
-/// Yes, this one's a var.
-/// Note: this directory will not work when running in Xcode, as we populate this using currentDirectoryPath which points to derived data.
 var configDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)"
 var saveDirectoryPath = ""
 
@@ -42,13 +40,6 @@ let possibleTransportNames = ["shadowsocks", "replicant"]
 
 let httpRequestString = "GET / HTTP/1.0\r\nConnection: close\r\n\r\n"
 let canaryString = "Yeah!\n"
-
-//let shSocksFilePath = "shadowsocks.json"
-//let replicantFilePath = "ReplicantClientConfig.json"
-
-//Transports
-//let shadowsocks = Transport(name: "shadow", port: "\(shsocksServerPort)")
-//let replicant = Transport(name: "Replicant", port: "\(replicantServerPort)")
 
 // Web Tests
 let facebook = WebTest(website: "https://www.facebook.com/", name: "facebook", port: 443)
