@@ -219,7 +219,8 @@ struct CanaryTest//: ParsableCommand
                     if (thisFilename.lowercased().contains(thisTransportName.lowercased()))
                     {
                         let configPath = configDirectoryPath.appending("/\(thisFilename)")
-                        let transportTestName = URL(fileURLWithPath: thisFilename).deletingPathExtension().path.replacingOccurrences(of: "/", with: "")
+                        let configURL = URL(fileURLWithPath: thisFilename)
+                        let transportTestName = configURL.deletingPathExtension().lastPathComponent
                         
                         if let newTransport = Transport(name: transportTestName, typeString: thisTransportName, configPath: configPath)
                         {
