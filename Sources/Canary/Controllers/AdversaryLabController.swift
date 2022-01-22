@@ -51,7 +51,7 @@ class AdversaryLabController
         
         if (recording == nil || !recording!)
         {
-            uiLogger.info("\n🔬  Failed to launch Adversary Lab: traffic data will not be recorded.")
+            uiLogger.error("\n🔬  Failed to launch Adversary Lab: transport test traffic data will not be recorded.")
         }
         
     }
@@ -66,7 +66,7 @@ class AdversaryLabController
         
         if (recording == nil || !recording!)
         {
-            uiLogger.info("\n🔬  Failed to launch Adversary Lab: traffic data will not be recorded.")
+            uiLogger.error("\n🔬  Failed to launch Adversary Lab: web test traffic data will not be recorded.")
         }
         
     }
