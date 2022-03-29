@@ -33,16 +33,14 @@ import Chord
 class TestController
 {
     static let sharedInstance = TestController()
-    let log = Logger(label: "TransportLogger")
     
     init()
     {
-        LoggingSystem.bootstrap(StreamLogHandler.standardError)
     }
     
     func runSwiftTransportTest(forTransport transport: Transport) -> TestResult?
     {
-        let transportController = TransportController(transport: transport, log: log)
+        let transportController = TransportController(transport: transport, log: uiLogger)
         
         guard let connection = Synchronizer.sync(transportController.startTransport)
         else { return nil }

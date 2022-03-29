@@ -17,8 +17,6 @@ import Transport
 class TransportController
 {
     let transportQueue = DispatchQueue(label: "TransportQueue")
-    let log: Logger
-    
     var transport: Transport
     var connectionCompletion: ((Connection?) -> Void)?
     var connection: Connection?
@@ -26,7 +24,6 @@ class TransportController
     init(transport: Transport, log: Logger)
     {
         self.transport = transport
-        self.log = log        
     }
             
     func startTransport(completionHandler: @escaping (Connection?) -> Void)
@@ -70,7 +67,7 @@ class TransportController
         switch transport.config
         {
             case .shadowsocksConfig(let shadowConfig):
-                let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: log)
+                let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: uiLogger)
                 
                 guard var shadowConnection = shadowFactory.connect(using: .tcp)
                 else
@@ -95,7 +92,7 @@ class TransportController
         switch transport.config
         {
             case .replicantConfig(let replicantConfig):
-                let replicantFactory = ReplicantConnectionFactory(config: replicantConfig, log: log)
+                let replicantFactory = ReplicantConnectionFactory(config: replicantConfig, log: uiLogger)
 
                 guard var replicantConnection = replicantFactory.connect(using: .tcp)
                 else
