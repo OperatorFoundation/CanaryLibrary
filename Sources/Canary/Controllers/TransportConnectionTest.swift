@@ -48,15 +48,18 @@ class TransportConnectionTest
             
             if let data = maybeData
             {
-//                print("Canary received data \(data). Appending to the buffer.")
+                print("Canary received data: \(data.string). Appending to the buffer.")
+                
                 self.readBuffer.append(data)
-
+                print("Canary Buffer: \(self.readBuffer.string)")
+                
                 if self.readBuffer.string.contains("Yeah!\n")
                 {
                     completionHandler(self.readBuffer)
                     return
                 }
 //                print("Read Buffer: \(self.readBuffer.string)")
+                print("Canary is still waiting for Yeah! Calling read again.")
                 self.read(completionHandler: completionHandler)
             }
             else
