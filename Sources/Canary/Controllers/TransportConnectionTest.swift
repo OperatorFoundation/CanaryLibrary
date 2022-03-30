@@ -48,10 +48,10 @@ class TransportConnectionTest
             
             if let data = maybeData
             {
-                print("Canary received data: \(data.string). Appending to the buffer.")
+                print("Canary received data size: \(data.count): contents: \(data.hex). Appending to the buffer.")
                 
                 self.readBuffer.append(data)
-                print("Canary Buffer: \(self.readBuffer.string)")
+                print("Canary Buffer size: \(self.readBuffer.count) contents: \(self.readBuffer.hex)")
                 
                 if self.readBuffer.string.contains("Yeah!\n")
                 {
