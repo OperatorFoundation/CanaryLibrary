@@ -85,6 +85,7 @@ class TransportConnectionTest
             print("Error sending http request for TransportConnectionTest: \(error)")
             return false
         }
+        print("\n----> Canary received a send response.")
         
         let response = Synchronizer.sync(read)
         guard let responseData = response
@@ -93,6 +94,8 @@ class TransportConnectionTest
             uiLogger.info("🚫 We did not receive a response 🚫\n")
                 return false
         }
+        
+        print("\n<---- Canary received a read response.")
         
         guard let responseString = String(data: responseData, encoding: .utf8)
         else
@@ -119,14 +122,14 @@ class TransportConnectionTest
             {
                 print("\n💕 🐥 It works! 🐥 💕")
                 uiLogger.info("\n💕 🐥 It works! 🐥 💕")
-                transportConnection.cancel()
+
                 return true
             }
             else
             {
                 uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
                 uiLogger.error("\nHere's what we got back instead of what we expected: \(payloadString)\n")
-                transportConnection.cancel()
+
                 return false
             }
         }
