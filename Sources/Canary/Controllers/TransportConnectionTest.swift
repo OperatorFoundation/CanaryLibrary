@@ -30,11 +30,14 @@ class TransportConnectionTest
     
     func send(completionHandler: @escaping (NWError?) -> Void)
     {
+        uiLogger.info("\n📣 Canary send called.")
         transportConnection.send(content: Data(string: httpRequestString), contentContext: .defaultMessage, isComplete: true, completion: NWConnection.SendCompletion.contentProcessed(completionHandler))
     }
     
     func read(completionHandler: @escaping (Data?) -> Void)
     {
+        uiLogger.info("\n📣 Canary read called.")
+        
         transportConnection.receive(minimumIncompleteLength: 1, maximumLength: 1500)
         {
             (maybeData,_,_, maybeError) in
