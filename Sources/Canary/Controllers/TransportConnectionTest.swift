@@ -119,13 +119,14 @@ class TransportConnectionTest
             {
                 print("\n💕 🐥 It works! 🐥 💕")
                 uiLogger.info("\n💕 🐥 It works! 🐥 💕")
+                transportConnection.cancel()
                 return true
             }
             else
             {
                 uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
                 uiLogger.error("\nHere's what we got back instead of what we expected: \(payloadString)\n")
-                
+                transportConnection.cancel()
                 return false
             }
         }
