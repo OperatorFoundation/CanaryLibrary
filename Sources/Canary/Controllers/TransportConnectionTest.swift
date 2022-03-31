@@ -42,15 +42,19 @@ class TransportConnectionTest
         {
             (maybeData,_,_, maybeError) in
             
+            print("\n<--- Canary read - TransportConnection.receive() completion reached.")
             if let error = maybeError
             {
                 uiLogger.info("\nError reading data for transport connection: \(error)\n")
                 completionHandler(self.readBuffer)
                 return
             }
+            print("\n<--- Canary read - No error received")
             
             if let data = maybeData
             {
+                print("\n<--- Canary read - some data received")
+                
                 self.readBuffer.append(data)
                 
                 if self.readBuffer.string.contains("Yeah!\n")
@@ -67,7 +71,7 @@ class TransportConnectionTest
             }
             else
             {
-                uiLogger.info("\n<--- Canary read received no data.")
+                print("\n<--- Canary read - no data received")
                 
                 completionHandler(self.readBuffer)
                 return
