@@ -48,18 +48,14 @@ class TransportConnectionTest
             
             if let data = maybeData
             {
-                print("Canary received data size: \(data.count): contents: \(data.hex). Appending to the buffer.")
-                
                 self.readBuffer.append(data)
-                print("Canary Buffer size: \(self.readBuffer.count) contents: \(self.readBuffer.hex)")
                 
                 if self.readBuffer.string.contains("Yeah!\n")
                 {
                     completionHandler(self.readBuffer)
                     return
                 }
-//                print("Read Buffer: \(self.readBuffer.string)")
-                print("Canary is still waiting for Yeah! Calling read again.")
+
                 self.read(completionHandler: completionHandler)
             }
             else
@@ -96,7 +92,6 @@ class TransportConnectionTest
             return false
         }
         
-        print("Response data as string: \n\(responseString)")
         let substrings = responseString.components(separatedBy: "\r\n\r\n")
         
         guard substrings.count > 1

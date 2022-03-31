@@ -68,9 +68,7 @@ class TransportController
         {
             case .shadowsocksConfig(let shadowConfig):
                 let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: uiLogger)
-                
-                print("Shadow config server IP: \(shadowConfig.serverIP)")
-                
+                                
                 guard var shadowConnection = shadowFactory.connect(using: .tcp)
                 else
                 {

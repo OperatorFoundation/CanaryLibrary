@@ -38,10 +38,7 @@ func zipResults()
         print("\nWe were unable to save any results as no packets were captured.")
         return
     }
-    
-    
-    
-    
+
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
     let zipName = "adversary_data_\(formatter.string(from: Date())).zip"
