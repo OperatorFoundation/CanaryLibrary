@@ -30,13 +30,13 @@ class TransportConnectionTest
     
     func send(completionHandler: @escaping (NWError?) -> Void)
     {
-        uiLogger.info("\n📣 Canary send called.")
+        uiLogger.info("\n---> Canary send called.")
         transportConnection.send(content: Data(string: httpRequestString), contentContext: .defaultMessage, isComplete: true, completion: NWConnection.SendCompletion.contentProcessed(completionHandler))
     }
     
     func read(completionHandler: @escaping (Data?) -> Void)
     {
-        uiLogger.info("\n📣 Canary read called.")
+        uiLogger.info("\n<--- Canary read called.")
         
         transportConnection.receive(minimumIncompleteLength: 1, maximumLength: 1500)
         {
@@ -55,14 +55,20 @@ class TransportConnectionTest
                 
                 if self.readBuffer.string.contains("Yeah!\n")
                 {
+                    uiLogger.info("\n<--- Canary read found the correct result.")
                     completionHandler(self.readBuffer)
                     return
                 }
-
-                self.read(completionHandler: completionHandler)
+                else
+                {
+                    uiLogger.info("\n<--- Canary is still looking for the correct result, read again.")
+                    self.read(completionHandler: completionHandler)
+                }
             }
             else
             {
+                uiLogger.info("\n<--- Canary read received no data.")
+                
                 completionHandler(self.readBuffer)
                 return
             }
