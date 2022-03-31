@@ -63,11 +63,11 @@ func zipResults()
     {
         try FileManager.default.zipItem(at: sourceURL, to: destinationURL)
     
-        uiLogger.error("\n🍩🍩 Saved zip: \(destinationURL)\n")
+        uiLogger.info("\n🍩🍩 Saved zip: \(destinationURL)\n")
     }
     catch
     {
-        uiLogger.info("\n🚨 Creation of ZIP archive failed with error:\(error) 🚨\n")
+        uiLogger.error("\n🚨 Creation of ZIP archive failed with error:\(error) 🚨\n")
         return
     }
 }
