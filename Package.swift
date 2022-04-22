@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.2"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .exact("1.0.3")),
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Gardener.git", from: "0.0.48"),
         .package(url: "https://github.com/OperatorFoundation/ReplicantSwiftClient.git", branch: "main"),
