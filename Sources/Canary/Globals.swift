@@ -32,9 +32,6 @@ var saveDirectoryPath = ""
 
 let adversaryLabClientProcessName = "AdversaryLabClient"
 
-//let shsocksServerPort: UInt16 = 2345
-//let replicantServerPort: UInt16 = 2277
-
 var testingTransports = [Transport]()
 let possibleTransportNames = ["shadowsocks", "replicant"]
 

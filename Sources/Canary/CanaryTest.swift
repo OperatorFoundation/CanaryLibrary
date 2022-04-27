@@ -27,10 +27,9 @@ import Gardener
 import NetUtils
 import Transmission
 
-struct CanaryTest//: ParsableCommand
+struct CanaryTest
 {
     var canaryTestQueue = DispatchQueue(label: "CanaryTests")
-    //var serverIP: String
     var configDirPath: String
     var savePath: String?
     var testCount: Int = 1
