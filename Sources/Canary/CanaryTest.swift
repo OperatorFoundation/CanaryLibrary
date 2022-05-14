@@ -41,7 +41,7 @@ struct CanaryTest
     ///  a csv file and song data (zipped) are saved with the test results.
     func begin(runAsync: Bool)
     {
-        Canary.printLog("\n Attempting to run tests...\n")
+        print("\n Attempting to run tests...\n")
         
         // Make sure we have everything we need first
         guard checkSetup() else { return }
@@ -170,10 +170,10 @@ struct CanaryTest
     
     func checkSetup() -> Bool
     {
-        Canary.printLog("\n🔍 Checking your setup...\n")
+        uiLogger.info("\n🔍 Checking your setup...\n")
         // Does the Resources Directory Exist?
         configDirectoryPath = configDirPath
-        Canary.printLog("\n✔️ Config directory: \(configDirectoryPath)\n")
+        uiLogger.info("\n✔️ Config directory: \(configDirectoryPath)\n")
         guard FileManager.default.fileExists(atPath: configDirectoryPath)
         else
         {
@@ -193,13 +193,13 @@ struct CanaryTest
                 return false
             }
             
-            Canary.printLog("\n✔️ User selected save directory: \(saveDirectoryPath)\n")
+            uiLogger.info("\n✔️ User selected save directory: \(saveDirectoryPath)\n")
         }
 
         guard prepareTransports()
         else { return false }
 
-        Canary.printLog("✔️ Check setup completed")
+        uiLogger.info("✔️ Check setup completed")
         return true
     }
     
@@ -224,7 +224,7 @@ struct CanaryTest
                         if let newTransport = Transport(name: transportTestName, typeString: thisTransportName, configPath: configPath)
                         {
                             testingTransports.append(newTransport)
-                            Canary.printLog("\n✔️ \(newTransport.name) test is ready\n")
+                            uiLogger.info("\n✔️ \(newTransport.name) test is ready\n")
                         }
                         else
                         {

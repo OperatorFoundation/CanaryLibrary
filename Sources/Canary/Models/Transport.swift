@@ -65,7 +65,7 @@ struct Transport
                 guard let replicantConfig = ReplicantConfig(withConfigAtPath: configPath)
                 else
                 {
-                    print("Failed to create a Replicant config.")
+                    uiLogger.error("Failed to create a Replicant config.")
                     return nil
                 }
                 
@@ -77,8 +77,7 @@ struct Transport
                 guard let shadowConfig = ShadowConfig(path: configPath)
                 else
                 {
-                    uiLogger.info("\n Unable to parse the ShadowSocks config at \(configPath)")
-                    print("\n Unable to parse the ShadowSocks config at \(configPath)")
+                    uiLogger.error("\n Unable to parse the ShadowSocks config at \(configPath)")
                     return nil
                 }
                 

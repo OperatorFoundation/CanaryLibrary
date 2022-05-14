@@ -16,13 +16,4 @@ public class Canary
     {
         chirp.begin(runAsync: runAsync)
     }
-    
-    static public func printLog(_ message: String)
-    {
-        uiLogger.info(Logger.Message(stringLiteral: message))
-        
-        #if os(macOS)
-        print(message)
-        #endif
-    }
 }

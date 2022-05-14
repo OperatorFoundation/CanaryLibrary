@@ -30,31 +30,24 @@ class TransportConnectionTest
     
     func send(completionHandler: @escaping (NWError?) -> Void)
     {
-        uiLogger.info("\n---> Canary send called.")
         transportConnection.send(content: Data(string: httpRequestString), contentContext: .defaultMessage, isComplete: true, completion: NWConnection.SendCompletion.contentProcessed(completionHandler))
     }
     
     func read(completionHandler: @escaping (Data?) -> Void)
     {
-        uiLogger.info("\n<--- Canary read called.")
-        
         transportConnection.receive(minimumIncompleteLength: 1, maximumLength: 1500)
         {
             (maybeData,_,_, maybeError) in
             
-            print("\n<--- Canary read - TransportConnection.receive() completion reached.")
             if let error = maybeError
             {
                 uiLogger.info("\nError reading data for transport connection: \(error)\n")
                 completionHandler(self.readBuffer)
                 return
             }
-            print("\n<--- Canary read - No error received")
             
             if let data = maybeData
             {
-                print("\n<--- Canary read - some data received")
-                
                 self.readBuffer.append(data)
                 
                 if self.readBuffer.string.contains("Yeah!\n")
@@ -71,8 +64,6 @@ class TransportConnectionTest
             }
             else
             {
-                print("\n<--- Canary read - no data received")
-                
                 completionHandler(self.readBuffer)
                 return
             }
@@ -86,59 +77,29 @@ class TransportConnectionTest
         let maybeError = Synchronizer.sync(self.send)
         if let error = maybeError
         {
-            print("Error sending http request for TransportConnectionTest: \(error)")
+            uiLogger.error("Error sending http request for TransportConnectionTest: \(error)")
             return false
         }
-        print("\n----> Canary received a send response.")
         
-        let response = Synchronizer.sync(read)
-        guard let responseData = response
+        guard let response = Synchronizer.sync(read)
             else
         {
             uiLogger.info("🚫 We did not receive a response 🚫\n")
                 return false
         }
         
-        print("\n<---- Canary received a read response.")
-        
-        guard let responseString = String(data: responseData, encoding: .utf8)
+        if response.string.contains("Yeah!\n")
+        {
+            uiLogger.info("\n💕 🐥 It works! 🐥 💕")
+
+            return true
+        }
         else
         {
-            uiLogger.info("We could not convert the response data into a string \(responseData)\n")
+            uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
+            uiLogger.error("\nHere's what we got back instead of what we expected: \(response.string)\n")
+
             return false
         }
-        
-        let substrings = responseString.components(separatedBy: "\r\n\r\n")
-        
-        guard substrings.count > 1
-        else
-        {
-            print("🚫 We received a response with only headers: \(responseString) 🚫")
-            return false
-        }
-        
-        let payloadString = String(substrings[1])
-                
-        //Control Data
-        if canaryString != nil
-        {
-            if canaryString == payloadString
-            {
-                print("\n💕 🐥 It works! 🐥 💕")
-                uiLogger.info("\n💕 🐥 It works! 🐥 💕")
-
-                return true
-            }
-            else
-            {
-                uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
-                uiLogger.error("\nHere's what we got back instead of what we expected: \(payloadString)\n")
-
-                return false
-            }
-        }
-        
-        return true
-
     }
 }

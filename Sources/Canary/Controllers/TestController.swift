@@ -50,9 +50,9 @@ class TestController
         ///Connection Test
         let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
         let success = connectionTest.run()
-        let hostString = transport.serverIP + ":\(transport.port)"
         
         // Save the result to a file
+        let hostString = transport.serverIP + ":\(transport.port)"
         let result = TestResult(hostString: hostString, testDate: Date(), name: transport.name, success: success)
         let _ = save(result: result, testName: transport.name)
         
