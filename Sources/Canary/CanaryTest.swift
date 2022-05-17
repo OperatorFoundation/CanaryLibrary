@@ -23,9 +23,7 @@
 import ArgumentParser
 import Foundation
 
-import Gardener
 import NetUtils
-import Transmission
 
 struct CanaryTest
 {
