@@ -9,7 +9,7 @@ final class CanaryTests: XCTestCase
     /// This is an example of how to use this library's API with the minimum required arguments
     func testQuickSetupCanary()
     {
-        //let godot = XCTestExpectation(description: "Never arrives")
+        let godot = XCTestExpectation(description: "Never arrives")
         
         let configDirectoryPath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/CanaryConfigs", isDirectory: true).path
         
@@ -19,7 +19,7 @@ final class CanaryTests: XCTestCase
         
         canary.runTest(runAsync: true)
         
-        //wait(for: [godot], timeout: 30)
+        wait(for: [godot], timeout: 30)
     }
 
 }
