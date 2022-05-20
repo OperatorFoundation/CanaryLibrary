@@ -1,4 +1,4 @@
-# Canary
+# CanaryLibrary
 
 The core library that powers CanaryDesktop, CanaryDesktopLegacy, and CanaryLinux.
 
@@ -8,7 +8,7 @@ Canary will run a series of transport tests based on the configs that you provid
 
 Currently only [Shadow](https://github.com/OperatorFoundation/ShadowSwift.git) tests are supported. Replicant support is underway, and will be capable of mimicking other transports when it is complete.
 
-## Adding Canary to your project
+## Adding CanaryLibrary to your project
 
 - Canary uses [SwiftPackageManager](https://github.com/apple/swift-package-manager.git).
 - Canary requires that you also include the swift Logging library in your dependencies.
