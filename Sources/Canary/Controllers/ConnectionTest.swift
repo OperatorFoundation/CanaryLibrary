@@ -44,7 +44,7 @@ class ConnectionTest
     
     func run() -> Bool
     {
-        uiLogger.info("\n📣 Running connection test.")
+        uiLogger.debug("\n📣 Running connection test.")
         
         if let url = URL(string: testWebAddress)
         {

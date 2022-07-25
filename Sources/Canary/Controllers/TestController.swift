@@ -34,22 +34,22 @@ class TestController
 {
     static let sharedInstance = TestController()
     
-    init()
-    {
-    }
-    
     func runSwiftTransportTest(forTransport transport: Transport) -> TestResult?
     {
         let transportController = TransportController(transport: transport, log: uiLogger)
-        
-        guard let connection = Synchronizer.sync(transportController.startTransport)
-        else { return nil }
-        
-        uiLogger.info("\n🧩 Launched \(transport). 🧩")
-                
-        ///Connection Test
-        let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
-        let success = connectionTest.run()
+        let success: Bool
+        if let connection = Synchronizer.sync(transportController.startTransport)
+        {
+            uiLogger.debug("\n🧩 Launched \(transport). 🧩")
+                    
+            ///Connection Test
+            let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
+            success = connectionTest.run()
+        }
+        else
+        {
+            success = false
+        }
         
         // Save the result to a file
         let hostString = transport.serverIP + ":\(transport.port)"
@@ -141,13 +141,11 @@ class TestController
         
         if let transportTestResult = self.runSwiftTransportTest(forTransport: transport)
         {
-            sleep(5)
             AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: transportTestResult)
         }
         else
         {
-            uiLogger.info("\n🛑  Received a nil result when testing \(transport.name) transport.\n")
-            sleep(5)
+            uiLogger.debug("\n🛑  Received a nil result when testing \(transport.name) transport.\n")
             AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
         }
     }
@@ -161,13 +159,11 @@ class TestController
         if let webTestResult = self.runWebTest(webTest: webTest)
         {
             //print("Test result for \(transport.name):\n\(webTestResult)\n")
-            sleep(5)
             AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: webTestResult)
         }
         else
         {
             uiLogger.info("\n🛑  Received a nil result when testing \(webTest.name) web address.")
-            sleep(5)
             AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
         }
     }

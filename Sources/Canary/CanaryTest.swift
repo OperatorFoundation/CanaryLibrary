@@ -51,20 +51,23 @@ struct CanaryTest
             // Use the user provided interface name
             interfaceName = interface!
             print("Running tests using the user selected interface \(interfaceName)")
+            uiLogger.info("User selected interface name: \(interfaceName)\n")
         }
         else
         {
             // Try to guess the interface, if we cannot then give up
-            guard let name = guessUserInterface()
-            else { return }
+            guard let name = guessUserInterface() else
+            {
+                uiLogger.error("Canary was unable to identify the correct interface and one was not previously specified. Canary testing has been cancelled.\n")
+                return
+            }
             
             
             interfaceName = name
             
-            print("\nWe will try using the \(interfaceName) interface. If Canary fails to capture data, it may be because this is not the correct interface. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
+            print("\nCanary has selected the most likely interface name. If Canary fails to capture data, it may be because this is not the correct interface. Please try running the program again using the interface flag and one of the other listed interfaces.\n")
+            uiLogger.info("Canary selected interface name: \(interfaceName)\n")
         }
-        
-        uiLogger.info("Selected an interface for running test: \(interfaceName)\n")
         
         if runAsync
         {

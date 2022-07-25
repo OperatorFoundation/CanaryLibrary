@@ -72,7 +72,7 @@ class TransportConnectionTest
     
     func run() -> Bool
     {
-        uiLogger.info("\n📣 Running transport connection test.")
+        uiLogger.debug("\n📣 Running transport connection test.")
         
         let maybeError = Synchronizer.sync(self.send)
         if let error = maybeError
@@ -81,24 +81,21 @@ class TransportConnectionTest
             return false
         }
         
-        guard let response = Synchronizer.sync(read)
-            else
+        guard let response = Synchronizer.sync(read) else
         {
             uiLogger.info("🚫 We did not receive a response 🚫\n")
-                return false
+            return false
         }
         
         if response.string.contains("Yeah!\n")
         {
             uiLogger.info("\n💕 🐥 It works! 🐥 💕")
-
             return true
         }
         else
         {
             uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
             uiLogger.error("\nHere's what we got back instead of what we expected: \(response.string)\n")
-
             return false
         }
     }
