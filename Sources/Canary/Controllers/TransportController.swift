@@ -9,7 +9,6 @@ import Foundation
 import Logging
 
 import Net
-import ReplicantSwiftClient
 import ReplicantSwift
 import ShadowSwift
 import Transport
@@ -92,9 +91,8 @@ class TransportController
         switch transport.config
         {
             case .replicantConfig(let replicantConfig):
-                let replicantFactory = ReplicantConnectionFactory(config: replicantConfig, log: uiLogger)
-
-                guard var replicantConnection = replicantFactory.connect(using: .tcp)
+                let replicant = Replicant(logger: uiLogger)
+                guard var replicantConnection = try? replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Connection
                 else
                 {
                     print("Failed to create a Replicant connection.")

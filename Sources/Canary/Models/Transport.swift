@@ -62,7 +62,7 @@ struct Transport
         switch newTransportType
         {
             case .replicant:
-                guard let replicantConfig = ReplicantConfig(withConfigAtPath: configPath)
+                guard let replicantConfig = ReplicantClientConfig(withConfigAtPath: configPath)
                 else
                 {
                     uiLogger.error("Failed to create a Replicant config.")
@@ -96,6 +96,6 @@ enum TransportType: String
 
 enum TransportConfig
 {
-    case replicantConfig(ReplicantConfig)
+    case replicantConfig(ReplicantClientConfig)
     case shadowsocksConfig(ShadowConfig)
 }

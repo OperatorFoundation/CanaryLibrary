@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Canary",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v12),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -18,7 +18,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", branch: "main"),
-        .package(url: "https://github.com/OperatorFoundation/ReplicantSwiftClient.git", branch: "main"),
+        .package(url: "https://github.com/OperatorFoundation/ReplicantSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", from: "4.3.0"),
     ],
@@ -28,7 +28,7 @@ let package = Package(
         .target(
             name: "Canary",
             dependencies: [
-                "ReplicantSwiftClient",
+                "ReplicantSwift",
                 "ShadowSwift",
                 .product(name: "AdversaryLabClientCore", package: "AdversaryLabClientSwift"),
                 .product(name: "Logging", package: "swift-log"),
