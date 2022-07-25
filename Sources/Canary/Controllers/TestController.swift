@@ -48,6 +48,7 @@ class TestController
         }
         else
         {
+            uiLogger.debug("\n🧩 Failed to Launch \(transport), creating a test result to track this failed connection. 🧩")
             success = false
         }
         
@@ -141,6 +142,7 @@ class TestController
         
         if let transportTestResult = self.runSwiftTransportTest(forTransport: transport)
         {
+            uiLogger.debug("\n✔️  Received a new result when testing \(transport.name) transport.\n")
             AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: transportTestResult)
         }
         else

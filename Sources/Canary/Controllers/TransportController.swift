@@ -68,16 +68,17 @@ class TransportController
             case .shadowsocksConfig(let shadowConfig):
                 let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: uiLogger)
                                 
-                guard var shadowConnection = shadowFactory.connect(using: .tcp)
+                if var shadowConnection = shadowFactory.connect(using: .tcp)
+                {
+                    connection = shadowConnection
+                    shadowConnection.stateUpdateHandler = self.handleStateUpdate
+                    shadowConnection.start(queue: transportQueue)
+                }
                 else
                 {
                     uiLogger.error("Failed to create a ShadowSocks connection.")
-                    return
+                    handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                 }
-                
-                connection = shadowConnection
-                shadowConnection.stateUpdateHandler = self.handleStateUpdate
-                shadowConnection.start(queue: transportQueue)
                 
             default:
                 uiLogger.error("Invalid ShadowSocks config.")
