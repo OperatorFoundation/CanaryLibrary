@@ -33,7 +33,7 @@ var saveDirectoryPath = ""
 let adversaryLabClientProcessName = "AdversaryLabClient"
 
 var testingTransports = [Transport]()
-let possibleTransportNames = ["shadowsocks", "replicant"]
+let possibleTransportNames = ["shadow", "replicant", "starbridge"]
 
 let httpRequestString = "GET / HTTP/1.0\r\nConnection: close\r\n\r\n"
 let canaryString = "Yeah!\n"

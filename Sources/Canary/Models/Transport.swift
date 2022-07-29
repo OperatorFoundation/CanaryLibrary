@@ -28,6 +28,7 @@
 import Foundation
 import ReplicantSwift
 import ShadowSwift
+import Starbridge
 
 struct Transport
 {
@@ -84,6 +85,18 @@ struct Transport
                 self.config = TransportConfig.shadowsocksConfig(shadowConfig)
                 self.serverIP = shadowConfig.serverIP
                 self.port = shadowConfig.port
+                
+            case .starbridge:
+                guard let starbridgeConfig = StarbridgeClientConfig(withConfigAtPath: configPath)
+                else
+                {
+                    uiLogger.error("Failed to create a Starbridge config")
+                    return nil
+                }
+                
+                self.config = TransportConfig.starbridgeConfig(starbridgeConfig)
+                self.serverIP = starbridgeConfig.replicantConfig.serverIP
+                self.port = starbridgeConfig.replicantConfig.port
         }
     }
 }
@@ -92,10 +105,12 @@ enum TransportType: String
 {
     case replicant = "replicant"
     case shadowsocks = "shadowsocks"
+    case starbridge = "starbridge"
 }
 
 enum TransportConfig
 {
     case replicantConfig(ReplicantClientConfig)
     case shadowsocksConfig(ShadowConfig)
+    case starbridgeConfig(StarbridgeClientConfig)
 }

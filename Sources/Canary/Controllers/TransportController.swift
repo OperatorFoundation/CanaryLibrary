@@ -11,6 +11,7 @@ import Logging
 import Net
 import ReplicantSwift
 import ShadowSwift
+import Starbridge
 import Transport
 
 class TransportController
@@ -35,6 +36,8 @@ class TransportController
                 launchReplicant()
             case .shadowsocks:
                 launchShadow()
+            case .starbridge:
+                launchStarbridge()
         }
     }
     
@@ -83,7 +86,6 @@ class TransportController
             default:
                 uiLogger.error("Invalid ShadowSocks config.")
                 return
-                
         }
     }
     
@@ -106,6 +108,30 @@ class TransportController
                 
             default:
                 uiLogger.error("Invalid Replicant config.")
+                return
+        }
+    }
+    
+    func launchStarbridge()
+    {
+        switch transport.config
+        {
+            case .starbridgeConfig(let starbridgeConfig):
+                let starburstConfig = StarburstConfig.SMTPClient
+                let starbridge = Starbridge(logger: uiLogger, config: starburstConfig)
+                guard var starbridgeConnection = try? starbridge.connect(config: starbridgeConfig) as? Connection
+                else
+                {
+                    uiLogger.error("Failed to create a Starbridge connection.")
+                    return
+                }
+                
+                connection = starbridgeConnection
+                starbridgeConnection.stateUpdateHandler = self.handleStateUpdate
+                starbridgeConnection.start(queue: transportQueue)
+
+            default:
+                uiLogger.error("Invalid Starbridge config.")
                 return
         }
     }
