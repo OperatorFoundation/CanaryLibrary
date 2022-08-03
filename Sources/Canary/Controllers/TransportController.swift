@@ -30,7 +30,7 @@ class TransportController
             
     func startTransport(completionHandler: @escaping (Transport.Connection?) -> Void)
     {
-        connectionCompletion = completionHandler
+        self.connectionCompletion = completionHandler
         
         switch transport.type
         {
@@ -130,9 +130,9 @@ class TransportController
                 
                 let starbridgeTransportConnection = TransmissionTransport.TransmissionToTransportConnection({return starbridgeConnection})
                 
+                self.connection = starbridgeTransportConnection
                 starbridgeTransportConnection.stateUpdateHandler = self.handleStateUpdate
                 starbridgeTransportConnection.start(queue: transportQueue)
-                self.connection = starbridgeTransportConnection
 
             default:
                 uiLogger.error("Invalid Starbridge config.")
