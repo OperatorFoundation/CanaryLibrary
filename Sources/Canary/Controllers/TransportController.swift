@@ -119,15 +119,16 @@ class TransportController
             case .starbridgeConfig(let starbridgeConfig):
                 let starburstConfig = StarburstConfig.SMTPClient
                 let starbridge = Starbridge(logger: uiLogger, config: starburstConfig)
-                guard var starbridgeConnection = try? starbridge.connect(config: starbridgeConfig)
+                guard var maybeStarbridgeConnection = try? starbridge.connect(config: starbridgeConfig)
                 else
                 {
                     uiLogger.error("Failed to create a Starbridge connection.")
                     return
                 }
                 
-                guard starbridgeConnection as? Connection else {
-                    uiLogger.error("Starbridge connection was the wrong type: \(type(of: starbridgeConnection))")
+                guard var starbridgeConnection = maybeStarbridgeConnection as? Connection else {
+                    uiLogger.error("Starbridge connection was the wrong type: \(type(of: maybeStarbridgeConnection))")
+                    return
                 }
                 
                 connection = starbridgeConnection
