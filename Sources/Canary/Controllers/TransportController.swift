@@ -13,20 +13,22 @@ import ReplicantSwift
 import ShadowSwift
 import Starbridge
 import Transport
+import TransmissionTypes
+import TransmissionTransport
 
 class TransportController
 {
     let transportQueue = DispatchQueue(label: "TransportQueue")
     var transport: CanaryTransport
-    var connectionCompletion: ((Connection?) -> Void)?
-    var connection: Connection?
+    var connectionCompletion: ((Transport.Connection?) -> Void)?
+    var connection: Transport.Connection?
     
     init(transport: CanaryTransport, log: Logger)
     {
         self.transport = transport
     }
             
-    func startTransport(completionHandler: @escaping (Connection?) -> Void)
+    func startTransport(completionHandler: @escaping (Transport.Connection?) -> Void)
     {
         connectionCompletion = completionHandler
         
@@ -119,21 +121,18 @@ class TransportController
             case .starbridgeConfig(let starbridgeConfig):
                 let starburstConfig = StarburstConfig.SMTPClient
                 let starbridge = Starbridge(logger: uiLogger, config: starburstConfig)
-                guard let maybeStarbridgeConnection = try? starbridge.connect(config: starbridgeConfig)
+                guard let starbridgeConnection = try? starbridge.connect(config: starbridgeConfig)
                 else
                 {
                     uiLogger.error("Failed to create a Starbridge connection.")
                     return
                 }
                 
-                guard var starbridgeConnection = maybeStarbridgeConnection as? Transport.Connection else {
-                    uiLogger.error("Starbridge connection was the wrong type: \(type(of: maybeStarbridgeConnection))")
-                    return
-                }
+                let starbridgeTransportConnection = TransmissionTransport.TransmissionToTransportConnection({return starbridgeConnection})
                 
-                connection = starbridgeConnection
-                starbridgeConnection.stateUpdateHandler = self.handleStateUpdate
-                starbridgeConnection.start(queue: transportQueue)
+                starbridgeTransportConnection.stateUpdateHandler = self.handleStateUpdate
+                starbridgeTransportConnection.start(queue: transportQueue)
+                self.connection = starbridgeTransportConnection
 
             default:
                 uiLogger.error("Invalid Starbridge config.")
