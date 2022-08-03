@@ -17,11 +17,11 @@ import Transport
 class TransportController
 {
     let transportQueue = DispatchQueue(label: "TransportQueue")
-    var transport: Transport
+    var transport: CanaryTransport
     var connectionCompletion: ((Connection?) -> Void)?
     var connection: Connection?
     
-    init(transport: Transport, log: Logger)
+    init(transport: CanaryTransport, log: Logger)
     {
         self.transport = transport
     }
@@ -95,7 +95,7 @@ class TransportController
         {
             case .replicantConfig(let replicantConfig):
                 let replicant = Replicant(logger: uiLogger)
-                guard var replicantConnection = try? replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Connection
+                guard var replicantConnection = try? replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Transport.Connection
                 else
                 {
                     print("Failed to create a Replicant connection.")
@@ -126,7 +126,7 @@ class TransportController
                     return
                 }
                 
-                guard var starbridgeConnection = maybeStarbridgeConnection as? Connection else {
+                guard var starbridgeConnection = maybeStarbridgeConnection as? Transport.Connection else {
                     uiLogger.error("Starbridge connection was the wrong type: \(type(of: maybeStarbridgeConnection))")
                     return
                 }

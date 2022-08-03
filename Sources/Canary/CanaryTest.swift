@@ -221,7 +221,7 @@ struct CanaryTest
                         let configURL = URL(fileURLWithPath: thisFilename)
                         let transportTestName = configURL.deletingPathExtension().lastPathComponent
                         
-                        if let newTransport = Transport(name: transportTestName, typeString: thisTransportName, configPath: configPath)
+                        if let newTransport = CanaryTransport(name: transportTestName, typeString: thisTransportName, configPath: configPath)
                         {
                             testingTransports.append(newTransport)
                             uiLogger.info("\n✔️ \(newTransport.name) test is ready\n")

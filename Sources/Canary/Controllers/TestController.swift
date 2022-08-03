@@ -34,7 +34,7 @@ class TestController
 {
     static let sharedInstance = TestController()
     
-    func runSwiftTransportTest(forTransport transport: Transport) -> TestResult?
+    func runSwiftTransportTest(forTransport transport: CanaryTransport) -> TestResult?
     {
         let transportController = TransportController(transport: transport, log: uiLogger)
         let success: Bool
@@ -134,7 +134,7 @@ class TestController
         }
     }
     
-    func test(transport: Transport, interface: String?, debugPrints: Bool = false)
+    func test(transport: CanaryTransport, interface: String?, debugPrints: Bool = false)
     {
         AdversaryLabController.sharedInstance.launchAdversaryLab(transport: transport, interface: interface, debugPrints: debugPrints)
         

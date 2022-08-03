@@ -41,7 +41,7 @@ class AdversaryLabController
     ///   - transport: The transport being used for this connection as a Transport
     ///   - interface: The name of the interface device, if it is not the default, as a String
     ///   - debugPrints: Whether or not AdversaryLab should show debug prints as a Bool
-    func launchAdversaryLab(transport: Transport, interface: String?, debugPrints: Bool = false)
+    func launchAdversaryLab(transport: CanaryTransport, interface: String?, debugPrints: Bool = false)
     {
         adversaryLabClient = AdversaryLabClientCore.AdversaryLabClient(transport: transport.name, port: transport.port, allowBlock: nil, debugPrints: debugPrints)
         

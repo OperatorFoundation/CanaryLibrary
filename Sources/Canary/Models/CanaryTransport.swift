@@ -30,7 +30,7 @@ import ReplicantSwift
 import ShadowSwift
 import Starbridge
 
-struct Transport
+struct CanaryTransport
 {
     let name: String
     let type: TransportType
