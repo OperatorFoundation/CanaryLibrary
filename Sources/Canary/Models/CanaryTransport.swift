@@ -104,7 +104,7 @@ struct CanaryTransport
 enum TransportType: String
 {
     case replicant = "replicant"
-    case shadowsocks = "shadowsocks"
+    case shadowsocks = "shadow"
     case starbridge = "starbridge"
 }
 
