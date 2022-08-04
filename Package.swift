@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/OperatorFoundation/ReplicantSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Starbridge.git", branch: "main"),
-        .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", from: "4.3.0"),
+        .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", branch: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
