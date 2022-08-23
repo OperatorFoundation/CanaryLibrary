@@ -81,14 +81,12 @@ func getApplicationSupportURL() -> URL?
         
         #if os(macOS)
         let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let directoryURL = appSupportURL.appendingPathComponent("Canary")
-        let directoryURLPath = directoryURL.path
+        let directoryURL = appSupportURL.appendingPathComponent("CanaryOutput")
         #else
-        let directoryURLPath = fileManager.currentDirectoryPath
-        let directoryURL = URL(fileURLWithPath: directoryURLPath)
+        let directoryURL = URL(fileURLWithPath: fileManager.currentDirectoryPath).appendingPathComponent("CanaryOutput", isDirectory: true)
         #endif
 
-        if (!FileManager.default.fileExists(atPath: directoryURLPath))
+        if (!FileManager.default.fileExists(atPath: directoryURL.path))
         {
             try fileManager.createDirectory (at: directoryURL, withIntermediateDirectories: true, attributes: nil)
         }
