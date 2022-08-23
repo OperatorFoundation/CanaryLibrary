@@ -97,16 +97,25 @@ class TransportController
         {
             case .replicantConfig(let replicantConfig):
                 let replicant = Replicant(logger: uiLogger)
-                guard var replicantConnection = try? replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Transport.Connection
-                else
+                
+                do
                 {
-                    print("Failed to create a Replicant connection.")
-                    return
+                    guard var replicantConnection = try replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Transport.Connection else
+                    {
+                        print("Failed to create a Replicant connection.")
+                        handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
+                        return
+                    }
+                    
+                    connection = replicantConnection
+                    replicantConnection.stateUpdateHandler = self.handleStateUpdate
+                    replicantConnection.start(queue: transportQueue)
                 }
-
-                connection = replicantConnection
-                replicantConnection.stateUpdateHandler = self.handleStateUpdate
-                replicantConnection.start(queue: transportQueue)
+                catch
+                {
+                    print("Failed to create a Replicant connection: \(error)")
+                    handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
+                }
                 
             default:
                 uiLogger.error("Invalid Replicant config.")
@@ -121,19 +130,22 @@ class TransportController
             case .starbridgeConfig(let starbridgeConfig):
                 let starburstConfig = StarburstConfig.SMTPClient
                 let starbridge = Starbridge(logger: uiLogger, config: starburstConfig)
-                guard let starbridgeConnection = try? starbridge.connect(config: starbridgeConfig)
-                else
+                
+                do
                 {
-                    uiLogger.error("Failed to create a Starbridge connection.")
-                    return
+                    let starbridgeConnection = try starbridge.connect(config: starbridgeConfig)
+                    let starbridgeTransportConnection = TransmissionTransport.TransmissionToTransportConnection({return starbridgeConnection})
+                    
+                    self.connection = starbridgeTransportConnection
+                    starbridgeTransportConnection.stateUpdateHandler = self.handleStateUpdate
+                    starbridgeTransportConnection.start(queue: transportQueue)
+                }
+                catch
+                {
+                    uiLogger.error("Failed to create a Starbridge connection: \(error)")
+                    handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                 }
                 
-                let starbridgeTransportConnection = TransmissionTransport.TransmissionToTransportConnection({return starbridgeConnection})
-                
-                self.connection = starbridgeTransportConnection
-                starbridgeTransportConnection.stateUpdateHandler = self.handleStateUpdate
-                starbridgeTransportConnection.start(queue: transportQueue)
-
             default:
                 uiLogger.error("Invalid Starbridge config.")
                 return
