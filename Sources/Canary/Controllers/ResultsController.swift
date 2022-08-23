@@ -81,18 +81,13 @@ func getApplicationSupportURL() -> URL?
         
         #if os(macOS)
         let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        //  Create subdirectory
         let directoryURL = appSupportURL.appendingPathComponent("Canary")
         let directoryURLPath = directoryURL.path
         #else
-        guard let directoryURLPath = fileManager.currentDirectoryPath else
-        {
-            print("Canary failed to find the current directory path.")
-            return nil
-        }
-                
+        let directoryURLPath = fileManager.currentDirectoryPath
+        let directoryURL = URL(fileURLWithPath: directoryURLPath)
         #endif
-        
+
         if (!FileManager.default.fileExists(atPath: directoryURLPath))
         {
             try fileManager.createDirectory (at: directoryURL, withIntermediateDirectories: true, attributes: nil)
