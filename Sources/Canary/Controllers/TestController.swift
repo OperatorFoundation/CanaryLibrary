@@ -45,6 +45,7 @@ class TestController
             ///Connection Test
             let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
             success = connectionTest.run()
+            connection.cancel()
         }
         else
         {

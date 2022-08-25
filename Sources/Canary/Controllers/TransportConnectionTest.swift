@@ -88,13 +88,11 @@ class TransportConnectionTest
         if response.string.contains("Yeah!\n")
         {
             uiLogger.info("\n💕 🐥 It works! 🐥 💕")
-            transportConnection.cancel()
             return true
         }
         else
         {
             uiLogger.error("\n🖤  We connected but the data did not match. 🖤")
-            transportConnection.cancel()
             uiLogger.error("\nHere's what we got back instead of what we expected: \(response.string)\n")
             return false
         }
