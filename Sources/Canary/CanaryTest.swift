@@ -205,6 +205,8 @@ struct CanaryTest
     
     func prepareTransports() -> Bool
     {
+        testingTransports.removeAll()
+        
         // Check the config directory for config files
         do
         {
