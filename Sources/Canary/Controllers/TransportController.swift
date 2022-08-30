@@ -45,7 +45,7 @@ class TransportController
     
     func handleStateUpdate(_ newState: NWConnection.State)
     {
-        guard let completion = connectionCompletion
+        guard let completion = self.connectionCompletion
         else
         {
             print("Unable to establish transport connection, our completion handler is nil.")
@@ -56,11 +56,14 @@ class TransportController
         {
             case .ready:
                 completion(connection)
+                self.connectionCompletion = nil
             case .cancelled:
                 completion(nil)
+                self.connectionCompletion = nil
             case .failed(let error):
                 print("Transport connection failed: \(error)")
                 completion(nil)
+                self.connectionCompletion = nil
             default:
                 return
         }
