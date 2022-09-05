@@ -48,7 +48,7 @@ class TransportController
         guard let completion = self.connectionCompletion
         else
         {
-            print("Unable to establish transport connection, our completion handler is nil.")
+            print("Canary.TransportController: Unable to handle new state: \(newState), our TransportController.connectionCompletion handler is nil.")
             return
         }
         
@@ -61,7 +61,7 @@ class TransportController
                 completion(nil)
                 self.connectionCompletion = nil
             case .failed(let error):
-                print("Transport connection failed: \(error)")
+                print("Canary.TransportController: Transport connection failed: \(error)")
                 completion(nil)
                 self.connectionCompletion = nil
             default:
@@ -84,12 +84,12 @@ class TransportController
                 }
                 else
                 {
-                    uiLogger.error("Failed to create a ShadowSocks connection.")
+                    uiLogger.error("Canary.TransportController: Failed to create a ShadowSocks connection.")
                     handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                 }
                 
             default:
-                uiLogger.error("Invalid ShadowSocks config.")
+                uiLogger.error("Canary.TransportController: Invalid ShadowSocks config.")
                 return
         }
     }
@@ -105,7 +105,7 @@ class TransportController
                 {
                     guard var replicantConnection = try replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Transport.Connection else
                     {
-                        print("Failed to create a Replicant connection.")
+                        print("Canary.TransportController: Failed to create a Replicant connection.")
                         handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                         return
                     }
@@ -116,12 +116,12 @@ class TransportController
                 }
                 catch
                 {
-                    print("Failed to create a Replicant connection: \(error)")
+                    print("Canary.TransportController: Failed to create a Replicant connection: \(error)")
                     handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                 }
                 
             default:
-                uiLogger.error("Invalid Replicant config.")
+                uiLogger.error("Canary.TransportController: Invalid Replicant config.")
                 return
         }
     }
@@ -145,12 +145,12 @@ class TransportController
                 }
                 catch
                 {
-                    uiLogger.error("Failed to create a Starbridge connection: \(error)")
+                    uiLogger.error("Canary.TransportController: Failed to create a Starbridge connection: \(error)")
                     handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
                 }
                 
             default:
-                uiLogger.error("Invalid Starbridge config.")
+                uiLogger.error("Canary.TransportController: Invalid Starbridge config.")
                 return
         }
     }
