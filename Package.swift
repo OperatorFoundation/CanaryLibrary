@@ -18,6 +18,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", branch: "main"),
+        .package(url: "https://github.com/OperatorFoundation/Gardener.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/ReplicantSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Starbridge.git", branch: "main"),
@@ -29,6 +30,7 @@ let package = Package(
         .target(
             name: "Canary",
             dependencies: [
+                "Gardener",
                 "ReplicantSwift",
                 "ShadowSwift",
                 "Starbridge",
