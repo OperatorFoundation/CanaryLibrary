@@ -185,16 +185,36 @@ class TestController
     
     func getDocumentURL() -> URL?
     {
-        if let directoryURL = getApplicationSupportURL()
+        let directoryURL: URL
+        
+        if saveDirectoryPath.isEmpty
         {
-            let documentURL = directoryURL.appendingPathComponent ("\(resultsFileName)\(getNowAsString()).\(resultsExtension)")
-            return documentURL
+            if let appSupportURL = getApplicationSupportURL()
+            {
+                directoryURL = appSupportURL
+            }
+            else
+            {
+                print("An error occurred while trying to create a document URL.")
+                return nil
+            }
         }
         else
         {
-            print("An error occurred while trying to create a document URL.")
-            return nil
+            if FileManager.default.fileExists(atPath: saveDirectoryPath)
+            {
+                directoryURL = URL(fileURLWithPath: saveDirectoryPath, isDirectory: true)
+            }
+            else
+            {
+                return nil
+            }
         }
+        
+        // Add a filename that includes the date
+        let documentURL = directoryURL.appendingPathComponent ("\(resultsFileName)\(getNowAsString()).\(resultsExtension)")
+        
+        return documentURL
     }
     
 }
