@@ -30,8 +30,6 @@ import Foundation
 var configDirectoryPath = "\(FileManager.default.homeDirectoryForCurrentUser)"
 var saveDirectoryPath = ""
 
-let adversaryLabClientProcessName = "AdversaryLabClient"
-
 var testingTransports = [CanaryTransport]()
 let possibleTransportNames = ["shadow", "replicant", "starbridge"]
 
@@ -45,11 +43,7 @@ let wikipedia = WebTest(website: "https://www.wikipedia.org/", name: "wikipedia"
 let ymedio = WebTest(website: "https://www.14ymedio.com", name: "14ymedio", port: 443)
 let cnet = WebTest(website: "https://www.cubanet.org", name: "cnet", port: 443)
 let diario = WebTest(website: "https://diariodecuba.com", name: "diario", port: 443)
-
 let allWebTests = [facebook, cnn, wikipedia, ymedio, cnet]
-
-let stateDirectoryPath = "TransportState"
 
 let resultsFileName = "CanaryResults"
 let resultsExtension = "csv"
-let outputDirectoryName = "Output"
