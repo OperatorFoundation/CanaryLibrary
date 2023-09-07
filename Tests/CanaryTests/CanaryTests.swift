@@ -1,4 +1,9 @@
+#if os(macOS)
+import os.log
+#else
 import Logging
+#endif
+
 import XCTest
 
 import Gardener
@@ -15,7 +20,7 @@ final class CanaryTests: XCTestCase
         
         let configDirectoryPath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/CanaryConfigs", isDirectory: true).path
         
-        let logger = Logger(label: "CanaryExample")
+        let logger = Logger()
         
         let canary = Canary(configPath: configDirectoryPath, logger: logger)
         

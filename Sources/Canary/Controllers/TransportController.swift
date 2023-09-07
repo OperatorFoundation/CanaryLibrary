@@ -6,7 +6,12 @@
 //
 
 import Foundation
+
+#if os(macOS)
+import os.log
+#else
 import Logging
+#endif
 
 import Net
 import ReplicantSwift
@@ -74,9 +79,9 @@ class TransportController
         switch transport.config
         {
             case .shadowsocksConfig(let shadowConfig):
-                let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: uiLogger)
+            let shadowFactory = ShadowConnectionFactory(config: shadowConfig, logger: uiLogger)
                                 
-                if var shadowConnection = shadowFactory.connect(using: .tcp)
+            if var shadowConnection = shadowFactory.connect(using: .tcp)
                 {
                     connection = shadowConnection
                     shadowConnection.stateUpdateHandler = self.handleStateUpdate
@@ -103,7 +108,7 @@ class TransportController
                 
                 do
                 {
-                    guard var replicantConnection = try replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.port), config: replicantConfig) as? Transport.Connection else
+                    guard var replicantConnection = try replicant.connect(host: replicantConfig.serverIP, port: Int(replicantConfig.serverPort), config: replicantConfig) as? Transport.Connection else
                     {
                         print("Canary.TransportController: Failed to create a Replicant connection.")
                         handleStateUpdate(.failed(NWError.posix(.ECONNREFUSED)))
@@ -131,8 +136,8 @@ class TransportController
         switch transport.config
         {
             case .starbridgeConfig(let starbridgeConfig):
-                let starburstConfig = StarburstConfig.SMTPClient
-                let starbridge = Starbridge(logger: uiLogger, config: starburstConfig)
+//                let starburstConfig = StarburstConfig.SMTPClient
+                let starbridge = Starbridge(logger: uiLogger)
                 
                 do
                 {

@@ -72,10 +72,10 @@ struct CanaryTransport
                 
                 self.config = TransportConfig.replicantConfig(replicantConfig)
                 self.serverIP = replicantConfig.serverIP
-                self.port = replicantConfig.port
+                self.port = replicantConfig.serverPort
                 
             case .shadowsocks:
-                guard let shadowConfig = ShadowConfig(path: configPath)
+                guard let shadowConfig = ShadowConfig.ShadowClientConfig(path: configPath)
                 else
                 {
                     uiLogger.error("\n Unable to parse the ShadowSocks config at \(configPath)")
@@ -84,7 +84,7 @@ struct CanaryTransport
                 
                 self.config = TransportConfig.shadowsocksConfig(shadowConfig)
                 self.serverIP = shadowConfig.serverIP
-                self.port = shadowConfig.port
+                self.port = shadowConfig.serverPort
                 
             case .starbridge:
                 guard let starbridgeConfig = StarbridgeClientConfig(withConfigAtPath: configPath)
@@ -93,10 +93,10 @@ struct CanaryTransport
                     uiLogger.error("Failed to create a Starbridge config")
                     return nil
                 }
-                
+
                 self.config = TransportConfig.starbridgeConfig(starbridgeConfig)
-                self.serverIP = starbridgeConfig.replicantConfig.serverIP
-                self.port = starbridgeConfig.replicantConfig.port
+                self.serverIP = starbridgeConfig.serverIP
+                self.port = starbridgeConfig.serverPort
         }
     }
 }
@@ -111,6 +111,6 @@ enum TransportType: String
 enum TransportConfig
 {
     case replicantConfig(ReplicantClientConfig)
-    case shadowsocksConfig(ShadowConfig)
+    case shadowsocksConfig(ShadowConfig.ShadowClientConfig)
     case starbridgeConfig(StarbridgeClientConfig)
 }

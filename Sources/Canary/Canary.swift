@@ -1,4 +1,8 @@
+#if os(macOS)
+import os.log
+#else
 import Logging
+#endif
 
 var uiLogger: Logger!
 
@@ -9,7 +13,6 @@ public class Canary
     public required init(configPath: String, savePath: String? = nil, logger: Logger, timesToRun: Int = 1, interface: String? = nil, debugPrints: Bool = false, runWebTests: Bool = false)
     {
         uiLogger = logger
-        uiLogger.logLevel = .info
         chirp = CanaryTest(configDirPath: configPath, savePath: savePath, testCount: timesToRun, interface: interface, debugPrints: debugPrints, runWebTests: runWebTests)
     }
     

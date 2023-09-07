@@ -40,7 +40,7 @@ class TestController
         let success: Bool
         if let connection = Synchronizer.sync(transportController.startTransport)
         {
-            uiLogger.debug("\n🧩 Launched \(transport). 🧩")
+            uiLogger.debug("\n🧩 Launched \(String(describing: transport)). 🧩")
                     
             ///Connection Test
             let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
@@ -49,7 +49,7 @@ class TestController
         }
         else
         {
-            uiLogger.debug("\n🧩 Failed to Launch \(transport), creating a test result to track this failed connection. 🧩")
+            uiLogger.debug("\n🧩 Failed to Launch \(String(describing: transport)), creating a test result to track this failed connection. 🧩")
             success = false
         }
         
