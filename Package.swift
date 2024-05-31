@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Canary",
     platforms: [
-        .macOS(.v13),
+        .macOS(.v14),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -19,10 +19,11 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.4.2"),
         .package(url: "https://github.com/OperatorFoundation/AdversaryLabClientSwift", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Gardener.git", branch: "main"),
-        .package(url: "https://github.com/OperatorFoundation/ReplicantSwift.git", from: "2.0.0"),
-        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", from: "4.0.0"),
+        .package(url: "https://github.com/OperatorFoundation/ReplicantSwift.git", branch: "main"),
+        .package(url: "https://github.com/OperatorFoundation/ShadowSwift.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/Starbridge.git", branch: "main"),
         .package(url: "https://github.com/OperatorFoundation/swift-netutils.git", branch: "main"),
+        .package(url: "https://github.com/OperatorFoundation/TransmissionAsync", branch: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

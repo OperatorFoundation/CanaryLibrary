@@ -1,8 +1,5 @@
-#if os(macOS)
-import os.log
-#else
+
 import Logging
-#endif
 
 var uiLogger: Logger!
 
@@ -16,8 +13,8 @@ public class Canary
         chirp = CanaryTest(configDirPath: configPath, savePath: savePath, testCount: timesToRun, interface: interface, debugPrints: debugPrints, runWebTests: runWebTests)
     }
     
-    public func runTest(runAsync: Bool = true)
+    public func runTest() async
     {
-        chirp.begin(runAsync: runAsync)
+        await chirp.begin()
     }
 }

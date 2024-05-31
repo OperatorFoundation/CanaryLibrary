@@ -62,18 +62,6 @@ struct CanaryTransport
         
         switch newTransportType
         {
-            case .replicant:
-                guard let replicantConfig = ReplicantClientConfig(withConfigAtPath: configPath)
-                else
-                {
-                    uiLogger.error("Failed to create a Replicant config.")
-                    return nil
-                }
-                
-                self.config = TransportConfig.replicantConfig(replicantConfig)
-                self.serverIP = replicantConfig.serverIP
-                self.port = replicantConfig.serverPort
-                
             case .shadowsocks:
                 guard let shadowConfig = ShadowConfig.ShadowClientConfig(path: configPath)
                 else
@@ -82,35 +70,35 @@ struct CanaryTransport
                     return nil
                 }
                 
-                self.config = TransportConfig.shadowsocksConfig(shadowConfig)
+                self.config = TransportConfig.shadowConfig(shadowConfig)
                 self.serverIP = shadowConfig.serverIP
                 self.port = shadowConfig.serverPort
                 
             case .starbridge:
-                guard let starbridgeConfig = StarbridgeClientConfig(withConfigAtPath: configPath)
-                else
+                do
+                {
+                    let starbridgeConfig = try StarbridgeClientConfig(path: configPath)
+                    self.config = TransportConfig.starbridgeConfig(starbridgeConfig)
+                    self.serverIP = starbridgeConfig.serverIP
+                    self.port = starbridgeConfig.serverPort
+                }
+                catch
                 {
                     uiLogger.error("Failed to create a Starbridge config")
                     return nil
                 }
-
-                self.config = TransportConfig.starbridgeConfig(starbridgeConfig)
-                self.serverIP = starbridgeConfig.serverIP
-                self.port = starbridgeConfig.serverPort
         }
     }
 }
 
 enum TransportType: String
 {
-    case replicant = "replicant"
     case shadowsocks = "shadow"
     case starbridge = "starbridge"
 }
 
 enum TransportConfig
 {
-    case replicantConfig(ReplicantClientConfig)
-    case shadowsocksConfig(ShadowConfig.ShadowClientConfig)
+    case shadowConfig(ShadowConfig.ShadowClientConfig)
     case starbridgeConfig(StarbridgeClientConfig)
 }

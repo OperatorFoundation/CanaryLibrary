@@ -36,7 +36,7 @@ struct CanaryTest
     
     /// launch AdversaryLabClient to capture our test traffic, and run a connection test.
     ///  a csv file and song data (zipped) are saved with the test results.
-    func begin(runAsync: Bool)
+    func begin() async
     {
         print("\n Attempting to run tests...\n")
         
@@ -69,20 +69,10 @@ struct CanaryTest
             uiLogger.info("Canary selected interface name: \(interfaceName)\n")
         }
         
-        if runAsync
-        {
-            canaryTestQueue.async
-            {
-                runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
-            }
-        }
-        else
-        {
-            runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
-        }
+        await runAllTests(interfaceName: interfaceName, runWebTests: runWebTests)
     }
     
-    func runAllTests(interfaceName: String, runWebTests: Bool)
+    func runAllTests(interfaceName: String, runWebTests: Bool) async
     {
         for i in 1...testCount
         {
@@ -91,7 +81,7 @@ struct CanaryTest
             for transport in testingTransports
             {
                 uiLogger.log(level: .info, "\n 🧪 Starting test for \(transport.name) 🧪")
-                TestController.sharedInstance.test(transport: transport, interface: interfaceName, debugPrints: debugPrints)
+                await TestController.sharedInstance.test(transport: transport, interface: interfaceName, debugPrints: debugPrints)
             }
             
             if (runWebTests)

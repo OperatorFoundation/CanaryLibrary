@@ -34,21 +34,23 @@ class TestController
 {
     static let sharedInstance = TestController()
     
-    func runSwiftTransportTest(forTransport transport: CanaryTransport) -> TestResult?
+    func runSwiftTransportTest(forTransport transport: CanaryTransport) async -> TestResult
     {
         let transportController = TransportController(transport: transport, log: uiLogger)
         let success: Bool
-        if let connection = Synchronizer.sync(transportController.startTransport)
+        
+        do
         {
+            let connection = try await transportController.startTransport()
             uiLogger.debug("\n🧩 Launched \(String(describing: transport)). 🧩")
                     
             ///Connection Test
             let connectionTest = TransportConnectionTest(transportConnection: connection, canaryString: canaryString)
-            success = connectionTest.run()
-            connection.cancel()
+            success = await connectionTest.run()
         }
-        else
+        catch
         {
+            // TODO: Add caught error to the report
             uiLogger.debug("\n🧩 Failed to Launch \(String(describing: transport)), creating a test result to track this failed connection. 🧩")
             success = false
         }
@@ -135,22 +137,13 @@ class TestController
         }
     }
     
-    func test(transport: CanaryTransport, interface: String?, debugPrints: Bool = false)
+    func test(transport: CanaryTransport, interface: String?, debugPrints: Bool = false) async
     {
         AdversaryLabController.sharedInstance.launchAdversaryLab(transport: transport, interface: interface, debugPrints: debugPrints)
         
         print("Testing \(transport.name) transport...")
         
-        if let transportTestResult = self.runSwiftTransportTest(forTransport: transport)
-        {
-            uiLogger.debug("\n✔️  Received a new result when testing \(transport.name) transport.\n")
-            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: transportTestResult)
-        }
-        else
-        {
-            uiLogger.debug("\n🛑  Received a nil result when testing \(transport.name) transport.\n")
-            AdversaryLabController.sharedInstance.stopAdversaryLab(testResult: nil)
-        }
+        let _ = await self.runSwiftTransportTest(forTransport: transport)
     }
     
     func test(webTest: WebTest, interface: String?, debugPrints: Bool = false)
